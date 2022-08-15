@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="CustomView">
+        <attr name="text" format="string" />
+        <attr name="textColor" format="color"/>
+    </declare-styleable>
+    <declare-styleable name="Speedometer">
+        <attr name="speed" format="integer" />
+        <attr name="maxScaleValue" format="integer" />
+        <attr name="speedUnits" format="enum">
+            <enum name="kmh" value="0" />
+            <enum name="mph" value="1" />
+        </attr>
+    </declare-styleable>
+</resources>

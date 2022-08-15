@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="CustomTextViewStyle">
+        <item name="android:textColor">@color/white</item>
+        <item name="fontFamily">@font/drive_numbers</item>
+        <item name="android:textSize">40sp</item>
+    </style>
+
+    <style name="SpeedometerStyle">
+        <item name="android:layout_width">@dimen/speedometer_width</item>
+        <item name="android:layout_height">@dimen/speedometer_height</item>
+        <item name="android:layout_marginTop">@dimen/speedometer_margin_top</item>
+        <item name="android:layout_marginBottom">@dimen/speedometer_margin_bottom</item>
+    </style>
+
+    <style name="MiniViewStyle">
+        <item name="android:layout_width">@dimen/mini_view_width</item>
+        <item name="android:layout_height">@dimen/mini_view_height</item>
+        <item name="android:layout_marginTop">@dimen/mini_view_margin_top</item>
+        <item name="android:layout_marginBottom">@dimen/mini_view_margin_bottom</item>
+    </style>
+</resources>

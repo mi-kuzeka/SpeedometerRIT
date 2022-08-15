@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="speedometer_width">144dp</dimen>
+    <dimen name="speedometer_height">144dp</dimen>
+    <dimen name="speedometer_margin_top">40dp</dimen>
+    <dimen name="speedometer_margin_bottom">56dp</dimen>
+    <dimen name="mini_view_width">80dp</dimen>
+    <dimen name="mini_view_height">80dp</dimen>
+    <dimen name="mini_view_margin_top">72dp</dimen>
+    <dimen name="mini_view_margin_bottom">88dp</dimen>
+</resources>
