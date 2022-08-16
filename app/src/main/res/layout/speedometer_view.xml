@@ -5,17 +5,26 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/custom_text_view"
-        style="@style/CustomTextViewStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        tools:text="@string/speed_sample"
-        android:maxLines="1"
+    <FrameLayout
+        android:id="@+id/scale_container"
+        android:layout_width="@dimen/speedometer_width"
+        android:layout_height="@dimen/speedometer_height"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/speed_text_view"
+        style="@style/SpeedTextViewStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:maxLines="1"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="@string/speed_sample" />
 
 
 </android.support.constraint.ConstraintLayout>

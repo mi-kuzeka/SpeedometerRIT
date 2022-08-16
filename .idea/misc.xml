@@ -6,7 +6,7 @@
         <entry key="..\:/Projects/My/Android/SpeedometerRIT/app/src/main/res/drawable/ic_widgets_desc_am.xml" value="0.1375" />
         <entry key="..\:/Projects/My/Android/SpeedometerRIT/app/src/main/res/drawable/ic_widgets_desc_kmh.xml" value="0.1375" />
         <entry key="..\:/Projects/My/Android/SpeedometerRIT/app/src/main/res/layout/activity_main.xml" value="0.14666666666666667" />
-        <entry key="..\:/Projects/My/Android/SpeedometerRIT/app/src/main/res/layout/custom_view.xml" value="0.11096014492753623" />
+        <entry key="..\:/Projects/My/Android/SpeedometerRIT/app/src/main/res/layout/speedometer_view.xml" value="0.1" />
       </map>
     </option>
   </component>
