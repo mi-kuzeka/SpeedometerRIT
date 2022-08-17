@@ -91,14 +91,23 @@ public class DotsScaleView extends View {
 
         // Draw dots
         for (int dotNumber = 1;
-             dotNumber <= drawingScaleHelper.getDotsCount(); dotNumber++)
+             dotNumber <= drawingScaleHelper.getDotsCount();
+             dotNumber++) {
+
             drawDots(dotNumber, canvas);
+        }
 
 //        float speedAngle = (float) (SCALE_SWEEP_ANGLE * speed) / maxScaleValue;
 //        canvas.drawArc(oval, SCALE_BEGIN_ANGLE, speedAngle, false, paint);
     }
 
     private void drawDots(int dotNumber, Canvas canvas) {
+        if (drawingScaleHelper.pointReached(dotNumber)) {
+            paint.setColor(getResources().getColor(R.color.white));
+        } else {
+            paint.setColor(getResources().getColor(R.color.gray));
+        }
+
         float angle = drawingScaleHelper.getDotAngle(dotNumber);
         int dotRadius = borderWidth / 4;
         int circleRadius = scaleSize / 2 - borderWidth - dotsMargin;
@@ -107,7 +116,6 @@ public class DotsScaleView extends View {
                 + dotOffset);
         float y = (float) ((Math.sin(Math.toRadians(angle)) * (float) circleRadius)
                 + dotOffset);
-        paint.setColor(getResources().getColor(R.color.white));
         canvas.drawCircle(x, y, dotRadius, paint);
     }
 }

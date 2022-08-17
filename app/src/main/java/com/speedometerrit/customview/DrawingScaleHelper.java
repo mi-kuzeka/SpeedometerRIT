@@ -41,7 +41,8 @@ public class DrawingScaleHelper {
         if (speed < 0) {
             this.speed = 0;
         } else this.speed = Math.min(speed, maxScaleValue);
-        this.speedAngle = ((float) SCALE_SWEEP_ANGLE * (float) this.speed) / (float) maxScaleValue;
+        this.speedAngle = ((float) SCALE_SWEEP_ANGLE
+                * (float) this.speed) / (float) maxScaleValue;
     }
 
     protected int getMaxScaleValue() {
@@ -73,6 +74,10 @@ public class DrawingScaleHelper {
 
     protected int getDotsCount() {
         return this.scaleSectorsCount - 1;
+    }
+
+    protected boolean pointReached(int dotNumber) {
+        return this.speed >= dotNumber * DEFAULT_MAJOR_TICKS;
     }
 
     public static int getInnerCircleSize(int scaleSize) {
