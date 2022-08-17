@@ -9,7 +9,7 @@ import android.view.View;
 import com.speedometerrit.R;
 
 public class OneLineScaleView extends View {
-    private final DrawingScaleHelper drawingScaleHelper;
+    private final DrawingScaleUtil drawingScaleUtil;
 
     // Paint object for coloring and styling
     private final Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -23,11 +23,11 @@ public class OneLineScaleView extends View {
     public OneLineScaleView(Context context) {
         super(context);
         setDefaultColors();
-        drawingScaleHelper = new DrawingScaleHelper();
+        drawingScaleUtil = new DrawingScaleUtil();
     }
 
     public void setSpeed(int speed, byte speedUnits) {
-        drawingScaleHelper.setSpeed(speed, speedUnits);
+        drawingScaleUtil.setSpeed(speed, speedUnits);
     }
 
     @Override
@@ -70,13 +70,13 @@ public class OneLineScaleView extends View {
 
         // Draw scale
         RectF oval = new RectF(borderWidth, borderWidth, scaleSize, scaleSize);
-        canvas.drawArc(oval, DrawingScaleHelper.SCALE_BEGIN_ANGLE,
-                DrawingScaleHelper.SCALE_SWEEP_ANGLE, false, paint);
+        canvas.drawArc(oval, DrawingScaleUtil.SCALE_BEGIN_ANGLE,
+                DrawingScaleUtil.SCALE_SWEEP_ANGLE, false, paint);
 
         // Draw speed progress
         paint.setColor(speedColor);
 
-        canvas.drawArc(oval, DrawingScaleHelper.SCALE_BEGIN_ANGLE,
-                drawingScaleHelper.getSpeedAngle(), false, paint);
+        canvas.drawArc(oval, DrawingScaleUtil.SCALE_BEGIN_ANGLE,
+                drawingScaleUtil.getSpeedAngle(), false, paint);
     }
 }
