@@ -4,43 +4,33 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.RectF;
+import android.view.View;
 
 import com.speedometerrit.R;
 
-public class DotsScaleView extends ScaleView {
-    // Current speed
-    private int speed;
-    // Speed units (km/h, MPH)
-    private byte speedUnits;
-    // Max speed value on the scale
-    private int maxScaleValue;
-    // Count of sectors on the scale
-    private int scaleSectorsCount;
-
+public class DotsScaleView extends View {
+    private final DrawingScaleHelper drawingScaleHelper;
     // Paint object for coloring and styling
-    private Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+    private final Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
     // Scale border width in pixels
-    private int borderWidth = 10;
+    private final int borderWidth = 10;
+    // Distance from scale to dots
+    private final int dotsMargin = 30;
     private int scaleSize = 0; // Scale size
     private int innerCircleSize = 0; // Inner circle size
     private int innerCirclePadding = 0; // Inner circle padding
-    // Ratio of scale to inner circle
-    private final double innerCircleRatio = 1.7;
+    private int innerCircleRightBottomPadding = 0;
     int innerCircleColor; // Inner circle color
     int scaleColor; // Scale color
 
     public DotsScaleView(Context context) {
         super(context);
         setDefaultColors();
+        drawingScaleHelper = new DrawingScaleHelper();
     }
 
-    @Override
     public void setSpeed(int speed, byte speedUnits) {
-        super.setSpeed(speed, speedUnits);
-        this.speed = getSpeed();
-        this.speedUnits = getSpeedUnits();
-        this.maxScaleValue = getMaxScaleValue();
-        this.scaleSectorsCount = getScaleSectorsCount();
+        drawingScaleHelper.setSpeed(speed, speedUnits);
     }
 
     @Override
@@ -51,8 +41,11 @@ public class DotsScaleView extends ScaleView {
         setMeasuredDimension(scaleSize, scaleSize);
 
         scaleSize -= borderWidth;
-        innerCircleSize = (int) Math.round(scaleSize / innerCircleRatio);
-        innerCirclePadding = (scaleSize - innerCircleSize) / 2;
+        innerCircleSize = DrawingScaleHelper.getInnerCircleSize(scaleSize);
+        innerCirclePadding = DrawingScaleHelper
+                .getInnerCirclePadding(scaleSize, innerCircleSize);
+        innerCircleRightBottomPadding = DrawingScaleHelper
+                .getInnerCircleRightBottomPadding(innerCircleSize, innerCirclePadding);
     }
 
     private void setDefaultColors() {
@@ -83,18 +76,38 @@ public class DotsScaleView extends ScaleView {
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeWidth(borderWidth);
 
-
+        // Draw scale
         RectF oval = new RectF(borderWidth, borderWidth, scaleSize, scaleSize);
-        canvas.drawArc(oval, SCALE_BEGIN_ANGLE, SCALE_SWEEP_ANGLE, false, paint);
+        canvas.drawArc(oval, DrawingScaleHelper.SCALE_BEGIN_ANGLE,
+                DrawingScaleHelper.SCALE_SWEEP_ANGLE, false, paint);
 
+        // Draw inner circle
         paint.setColor(innerCircleColor);
 
-        int innerCircleRightBottomPadding = innerCircleSize + innerCirclePadding;
         RectF innerOval = new RectF(innerCirclePadding, innerCirclePadding,
                 innerCircleRightBottomPadding, innerCircleRightBottomPadding);
-        canvas.drawArc(innerOval, SCALE_BEGIN_ANGLE, SCALE_SWEEP_ANGLE, false, paint);
+        canvas.drawArc(innerOval, DrawingScaleHelper.SCALE_BEGIN_ANGLE,
+                DrawingScaleHelper.SCALE_SWEEP_ANGLE, false, paint);
+
+        // Draw dots
+        for (int dotNumber = 1;
+             dotNumber <= drawingScaleHelper.getDotsCount(); dotNumber++)
+            drawDots(dotNumber, canvas);
 
 //        float speedAngle = (float) (SCALE_SWEEP_ANGLE * speed) / maxScaleValue;
 //        canvas.drawArc(oval, SCALE_BEGIN_ANGLE, speedAngle, false, paint);
+    }
+
+    private void drawDots(int dotNumber, Canvas canvas) {
+        float angle = drawingScaleHelper.getDotAngle(dotNumber);
+        int dotRadius = borderWidth / 4;
+        int circleRadius = scaleSize / 2 - borderWidth - dotsMargin;
+        int dotOffset = circleRadius + borderWidth + dotsMargin + dotRadius * 2;
+        float x = (float) ((Math.cos(Math.toRadians(angle)) * (float) circleRadius)
+                + dotOffset);
+        float y = (float) ((Math.sin(Math.toRadians(angle)) * (float) circleRadius)
+                + dotOffset);
+        paint.setColor(getResources().getColor(R.color.white));
+        canvas.drawCircle(x, y, dotRadius, paint);
     }
 }
