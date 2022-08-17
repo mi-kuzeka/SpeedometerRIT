@@ -7,7 +7,7 @@ import android.graphics.RectF;
 
 import com.speedometerrit.R;
 
-public class OneLineScaleView extends ScaleView {
+public class DotsScaleView extends ScaleView {
     // Current speed
     private int speed;
     // Speed units (km/h, MPH)
@@ -22,11 +22,14 @@ public class OneLineScaleView extends ScaleView {
     // Scale border width in pixels
     private int borderWidth = 10;
     private int scaleSize = 0; // Scale size
+    private int innerCircleSize = 0; // Inner circle size
+    private int innerCirclePadding = 0; // Inner circle padding
+    // Ratio of scale to inner circle
+    private final double innerCircleRatio = 1.7;
+    int innerCircleColor; // Inner circle color
     int scaleColor; // Scale color
-    // Current speed sector color
-    int speedColor;
 
-    public OneLineScaleView(Context context) {
+    public DotsScaleView(Context context) {
         super(context);
         setDefaultColors();
     }
@@ -48,20 +51,22 @@ public class OneLineScaleView extends ScaleView {
         setMeasuredDimension(scaleSize, scaleSize);
 
         scaleSize -= borderWidth;
+        innerCircleSize = (int) Math.round(scaleSize / innerCircleRatio);
+        innerCirclePadding = (scaleSize - innerCircleSize) / 2;
     }
 
     private void setDefaultColors() {
-        this.scaleColor = getResources().getColor(R.color.dark_grey);
-        this.speedColor = getResources().getColor(R.color.turquoise);
+        this.innerCircleColor = getResources().getColor(R.color.gray);
+        this.scaleColor = getResources().getColor(R.color.turquoise);
+    }
+
+    public void setInnerCircleColor(int color) {
+        this.innerCircleColor = color;
+        //TODO: changeScaleColor();
     }
 
     public void setScaleColor(int color) {
         this.scaleColor = color;
-        //TODO: changeScaleColor();
-    }
-
-    public void setSpeedColor(int color) {
-        this.speedColor = color;
         //TODO: changeScaleColor();
     }
 
@@ -78,12 +83,18 @@ public class OneLineScaleView extends ScaleView {
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeWidth(borderWidth);
 
+
         RectF oval = new RectF(borderWidth, borderWidth, scaleSize, scaleSize);
         canvas.drawArc(oval, SCALE_BEGIN_ANGLE, SCALE_SWEEP_ANGLE, false, paint);
 
-        paint.setColor(speedColor);
+        paint.setColor(innerCircleColor);
 
-        float speedAngle = (float) (SCALE_SWEEP_ANGLE * speed) / maxScaleValue;
-        canvas.drawArc(oval, SCALE_BEGIN_ANGLE, speedAngle, false, paint);
+        int innerCircleRightBottomPadding = innerCircleSize + innerCirclePadding;
+        RectF innerOval = new RectF(innerCirclePadding, innerCirclePadding,
+                innerCircleRightBottomPadding, innerCircleRightBottomPadding);
+        canvas.drawArc(innerOval, SCALE_BEGIN_ANGLE, SCALE_SWEEP_ANGLE, false, paint);
+
+//        float speedAngle = (float) (SCALE_SWEEP_ANGLE * speed) / maxScaleValue;
+//        canvas.drawArc(oval, SCALE_BEGIN_ANGLE, speedAngle, false, paint);
     }
 }
