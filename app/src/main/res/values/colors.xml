@@ -12,4 +12,5 @@
     <color name="lemon">#F1F525</color>
     <color name="gray">#636363</color>
     <color name="dark_grey">#2F2F2F</color>
+    <color name="scale_gradient">#00D9D9D9</color>
 </resources>

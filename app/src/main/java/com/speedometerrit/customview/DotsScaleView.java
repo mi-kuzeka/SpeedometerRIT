@@ -2,10 +2,12 @@ package com.speedometerrit.customview;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.LinearGradient;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.RectF;
+import android.graphics.Shader;
 import android.view.View;
 
 import com.speedometerrit.R;
@@ -82,6 +84,8 @@ public class DotsScaleView extends View {
 
         drawInnerCircle(canvas, innerCirclePadding, innerCircleRightBottomPadding);
 
+        paint.setShader(null);
+
         // Draw dots
         float circleRadius = drawingScaleUtil.getDotCircleRadius((float) scaleSize);
         float dotOffset = drawingScaleUtil.getDotOffset(circleRadius);
@@ -107,7 +111,9 @@ public class DotsScaleView extends View {
     }
 
     private void drawOuterCircle(Canvas canvas) {
-        paint.setColor(scaleColor);
+        // Set gradient
+        paint.setShader(getScaleGradient(scaleSize - scalePadding, scaleColor));
+
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeWidth(DrawingScaleUtil.SCALE_THICKNESS);
 
@@ -117,10 +123,32 @@ public class DotsScaleView extends View {
                 DrawingScaleUtil.SCALE_SWEEP_ANGLE, false, paint);
     }
 
+    private LinearGradient getScaleGradient(float circleRadius, int scaleColor) {
+        // Create the gradient shader
+        int endColor = getResources().getColor(R.color.scale_gradient);
+        int[] colors = {scaleColor, scaleColor, endColor};
+        float[] positions = {0, 0.75f, 1};
+        float gradientBeginAngleOffset = 10f;
+        float gradientY1 = DrawingScaleUtil.getDotY(
+                DrawingScaleUtil.SCALE_BEGIN_ANGLE - gradientBeginAngleOffset,
+                circleRadius,
+                0);
+
+        return new LinearGradient(scaleSize / 2,
+                0,
+                scaleSize / 2,
+                gradientY1,
+                colors,
+                positions,
+                Shader.TileMode.CLAMP);
+    }
+
     private void drawInnerCircle(Canvas canvas,
                                  float padding,
                                  float rightBottomPadding) {
-        paint.setColor(innerCircleColor);
+        // Set gradient
+        paint.setShader(getScaleGradient(scaleSize - padding,
+                innerCircleColor));
         RectF innerOval = new RectF(padding, padding,
                 rightBottomPadding, rightBottomPadding);
         canvas.drawArc(innerOval, DrawingScaleUtil.SCALE_BEGIN_ANGLE,
