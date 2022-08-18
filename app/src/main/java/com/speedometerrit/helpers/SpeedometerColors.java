@@ -1,4 +1,6 @@
-package com.speedometerrit;
+package com.speedometerrit.helpers;
+
+import com.speedometerrit.R;
 
 import java.util.Random;
 

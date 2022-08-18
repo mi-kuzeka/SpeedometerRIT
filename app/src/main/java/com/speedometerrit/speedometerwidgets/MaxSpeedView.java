@@ -1,9 +1,11 @@
-package com.speedometerrit.customview;
+package com.speedometerrit.speedometerwidgets;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.speedometerrit.R;
+import com.speedometerrit.customview.MiniWidget;
+import com.speedometerrit.helpers.SpeedometerHelper;
 
 public class MaxSpeedView extends MiniWidget {
     private int maxSpeed = 0;

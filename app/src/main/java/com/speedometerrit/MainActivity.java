@@ -4,10 +4,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.FrameLayout;
 
-import com.speedometerrit.customview.DotsSpeedometerView;
-import com.speedometerrit.customview.MaxSpeedView;
-import com.speedometerrit.customview.SpeedometerHelper;
-import com.speedometerrit.customview.OneLineScaleView;
+import com.speedometerrit.speedometerwidgets.CurrentTimeView;
+import com.speedometerrit.speedometerwidgets.DotsSpeedometerView;
+import com.speedometerrit.speedometerwidgets.MaxSpeedView;
+import com.speedometerrit.helpers.SpeedometerHelper;
+
+import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -48,9 +50,12 @@ public class MainActivity extends AppCompatActivity {
 //        scaleView1.setSpeed(120, SpeedometerHelper.SPEED_UNITS_MPH);
 //        leftViewContainer.addView(scaleView1);
 
-        OneLineScaleView scaleView2 = new OneLineScaleView(this);
-        scaleView2.setSpeed(120, SpeedometerHelper.SPEED_UNITS_KMH);
-        rightViewContainer.addView(scaleView2);
+        CurrentTimeView currentTimeView = new CurrentTimeView(this);
+        rightViewContainer.addView(currentTimeView);
+
+//        OneLineScaleView scaleView2 = new OneLineScaleView(this);
+//        scaleView2.setSpeed(120, SpeedometerHelper.SPEED_UNITS_KMH);
+//        rightViewContainer.addView(scaleView2);
 //        SpeedometerView speedometerView = new SpeedometerView(this);
 //        speedometerView.setSpeed(24);
 //        speedometerView.setTextSize(getResources().getDimension(R.dimen.speedometer_text_size));

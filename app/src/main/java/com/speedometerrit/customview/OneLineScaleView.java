@@ -6,7 +6,8 @@ import android.graphics.Paint;
 import android.graphics.RectF;
 import android.view.View;
 
-import com.speedometerrit.SpeedometerColors;
+import com.speedometerrit.helpers.SpeedometerColors;
+import com.speedometerrit.helpers.SpeedometerHelper;
 
 public class OneLineScaleView extends View {
     private final SpeedometerHelper speedometerHelper;

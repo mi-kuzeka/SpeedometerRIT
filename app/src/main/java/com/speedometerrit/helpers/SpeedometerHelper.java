@@ -1,4 +1,4 @@
-package com.speedometerrit.customview;
+package com.speedometerrit.helpers;
 
 public class SpeedometerHelper {
     public static final byte SPEED_UNITS_KMH = 0;
@@ -30,7 +30,7 @@ public class SpeedometerHelper {
     private int scaleSectorsCount;
     private float speedAngle;
 
-    private float scalePadding = SCALE_THICKNESS / 2;
+    private final float scalePadding = SCALE_THICKNESS / 2;
 
     public SpeedometerHelper(int speed, byte speedUnits) {
         setSpeed(speed, speedUnits);
@@ -40,7 +40,7 @@ public class SpeedometerHelper {
         setSpeed(this.speed, this.speedUnits);
     }
 
-    protected void setSpeed(int speed, byte speedUnits) {
+    public void setSpeed(int speed, byte speedUnits) {
         this.speedUnits = speedUnits;
         if (speedUnits == SPEED_UNITS_KMH) {
             this.maxScaleValue = DEFAULT_MAX_SCALE_VALUE_KMH;
@@ -63,59 +63,59 @@ public class SpeedometerHelper {
         return DEFAULT_MAX_SCALE_VALUE_MPH;
     }
 
-    protected float getScalePadding() {
+    public float getScalePadding() {
         return this.scalePadding;
     }
 
-    protected int getMaxScaleValue() {
+    public int getMaxScaleValue() {
         return this.maxScaleValue;
     }
 
     /**
      * Get count of sectors on the scale
      */
-    protected int getScaleSectorsCount() {
+    public int getScaleSectorsCount() {
         return this.scaleSectorsCount;
     }
 
-    protected int getSpeed() {
+    public int getSpeed() {
         return this.speed;
     }
 
-    protected byte getSpeedUnits() {
+    public byte getSpeedUnits() {
         return this.speedUnits;
     }
 
     /**
      * Get angle for current speed
      */
-    protected float getSpeedAngle() {
+    public float getSpeedAngle() {
         return this.speedAngle;
     }
 
     /**
      * Get angle for current dot
      */
-    protected float getDotAngle(int dotNumber) {
+    public float getDotAngle(int dotNumber) {
         float dotAngle = SCALE_BEGIN_ANGLE +
                 ((float) SCALE_SWEEP_ANGLE / (float) this.scaleSectorsCount) * dotNumber;
         if (dotAngle < 360) return dotAngle;
         return dotAngle - 360;
     }
 
-    protected int getDotsCount() {
+    public int getDotsCount() {
         return this.scaleSectorsCount - 1;
     }
 
-    protected boolean pointReached(int dotNumber) {
+    public boolean pointReached(int dotNumber) {
         return this.speed >= dotNumber * MAJOR_TICKS;
     }
 
-    protected float getDotCircleRadius(float scaleSize) {
+    public float getDotCircleRadius(float scaleSize) {
         return scaleSize / 2 - SCALE_THICKNESS - DOTS_MARGIN;
     }
 
-    protected float getDotOffset(float circleRadius) {
+    public float getDotOffset(float circleRadius) {
         return circleRadius + scalePadding + DOTS_MARGIN + DOT_RADIUS;
     }
 
@@ -133,21 +133,21 @@ public class SpeedometerHelper {
         return (float) ((Math.sin(Math.toRadians(angle)) * circleRadius) + dotOffset);
     }
 
-    protected float getInnerCircleSize(float scaleSize) {
+    public float getInnerCircleSize(float scaleSize) {
         return scaleSize / INNER_CIRCLE_RATIO;
     }
 
-    protected float getInnerCirclePadding(float scaleSize, float innerCircleSize) {
+    public float getInnerCirclePadding(float scaleSize, float innerCircleSize) {
         return (scaleSize - innerCircleSize) / 2;
     }
 
-    protected float getInnerCircleRightBottomPadding(
+    public float getInnerCircleRightBottomPadding(
             float innerCircleSize, float innerCirclePadding) {
 
         return innerCircleSize + innerCirclePadding;
     }
 
-    protected float getNeedleOffset() {
+    public float getNeedleOffset() {
         return SCALE_THICKNESS + (DOTS_MARGIN / 2);
     }
 
@@ -155,11 +155,11 @@ public class SpeedometerHelper {
         return (viewSize / 2) - needleOffset;
     }
 
-    protected float getNeedleAngle() {
+    public float getNeedleAngle() {
         return this.speedAngle - (180 - SCALE_BEGIN_ANGLE);
     }
 
-    protected float getCenterCircleRadius(float center, float innerCirclePadding) {
+    public float getCenterCircleRadius(float center, float innerCirclePadding) {
         return center - innerCirclePadding - scalePadding;
     }
 }

@@ -10,7 +10,8 @@ import android.graphics.RectF;
 import android.graphics.Shader;
 import android.view.View;
 
-import com.speedometerrit.SpeedometerColors;
+import com.speedometerrit.helpers.SpeedometerColors;
+import com.speedometerrit.helpers.SpeedometerHelper;
 
 public class DotsScaleView extends View {
     private final SpeedometerHelper speedometerHelper;

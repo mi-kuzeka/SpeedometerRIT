@@ -2,7 +2,6 @@ package com.speedometerrit.customview;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
@@ -14,7 +13,8 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.speedometerrit.R;
-import com.speedometerrit.SpeedometerColors;
+import com.speedometerrit.helpers.SpeedometerColors;
+import com.speedometerrit.helpers.SpeedometerHelper;
 
 public class SpeedometerView extends ConstraintLayout {
     ConstraintLayout layout = null;
