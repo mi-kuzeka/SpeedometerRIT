@@ -6,10 +6,10 @@ import android.graphics.Paint;
 import android.graphics.RectF;
 import android.view.View;
 
-import com.speedometerrit.R;
+import com.speedometerrit.SpeedometerColors;
 
 public class OneLineScaleView extends View {
-    private final DrawingScaleUtil drawingScaleUtil;
+    private final SpeedometerHelper speedometerHelper;
 
     // Paint object for coloring and styling
     private final Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -22,11 +22,11 @@ public class OneLineScaleView extends View {
     public OneLineScaleView(Context context) {
         super(context);
         setDefaultColors();
-        drawingScaleUtil = new DrawingScaleUtil();
+        speedometerHelper = new SpeedometerHelper();
     }
 
     public void setSpeed(int speed, byte speedUnits) {
-        drawingScaleUtil.setSpeed(speed, speedUnits);
+        speedometerHelper.setSpeed(speed, speedUnits);
     }
 
     @Override
@@ -36,21 +36,25 @@ public class OneLineScaleView extends View {
         scaleSize = Math.min(getMeasuredWidth(), getMeasuredHeight());
         setMeasuredDimension(scaleSize, scaleSize);
 
-        scalePadding = drawingScaleUtil.getScalePadding();
+        scalePadding = speedometerHelper.getScalePadding();
     }
 
     private void setDefaultColors() {
-        this.scaleColor = getResources().getColor(R.color.dark_grey);
-        this.speedColor = getResources().getColor(R.color.turquoise);
+        this.scaleColor = getColor(SpeedometerColors.getDefaultOneLineScaleColor());
+        this.speedColor = getColor(SpeedometerColors.getDefaultSpeedProgressColor());
     }
 
-    public void setScaleColor(int color) {
-        this.scaleColor = color;
+    private int getColor(int colorId) {
+        return getResources().getColor(colorId);
+    }
+
+    public void setScaleColor(int colorId) {
+        this.scaleColor = getColor(colorId);
         //TODO: changeScaleColor();
     }
 
-    public void setSpeedColor(int color) {
-        this.speedColor = color;
+    public void setSpeedColor(int colorId) {
+        this.speedColor = getColor(colorId);
         //TODO: changeScaleColor();
     }
 
@@ -65,18 +69,18 @@ public class OneLineScaleView extends View {
     private void drawScale(Canvas canvas) {
         paint.setColor(scaleColor);
         paint.setStyle(Paint.Style.STROKE);
-        paint.setStrokeWidth(DrawingScaleUtil.SCALE_THICKNESS);
+        paint.setStrokeWidth(SpeedometerHelper.SCALE_THICKNESS);
 
         // Draw scale
         RectF oval = new RectF(scalePadding, scalePadding,
                 scaleSize - scalePadding, scaleSize - scalePadding);
-        canvas.drawArc(oval, DrawingScaleUtil.SCALE_BEGIN_ANGLE,
-                DrawingScaleUtil.SCALE_SWEEP_ANGLE, false, paint);
+        canvas.drawArc(oval, SpeedometerHelper.SCALE_BEGIN_ANGLE,
+                SpeedometerHelper.SCALE_SWEEP_ANGLE, false, paint);
 
         // Draw speed progress
         paint.setColor(speedColor);
 
-        canvas.drawArc(oval, DrawingScaleUtil.SCALE_BEGIN_ANGLE,
-                drawingScaleUtil.getSpeedAngle(), false, paint);
+        canvas.drawArc(oval, SpeedometerHelper.SCALE_BEGIN_ANGLE,
+                speedometerHelper.getSpeedAngle(), false, paint);
     }
 }

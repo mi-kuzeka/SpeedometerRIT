@@ -2,6 +2,7 @@ package com.speedometerrit.customview;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
@@ -13,15 +14,16 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.speedometerrit.R;
+import com.speedometerrit.SpeedometerColors;
 
 public class SpeedometerView extends ConstraintLayout {
-    public static final String TAG = SpeedometerView.class.getSimpleName();
-
     ConstraintLayout layout = null;
     TextView speedTextView = null;
     FrameLayout scaleContainer = null;
     int speed = 0;
-    byte speedUnits = 0;
+    int speedUnits = 0;
+    int maxScaleValue;
+    int textColor;
 
     public SpeedometerView(@NonNull Context context) {
         super(context);
@@ -33,8 +35,14 @@ public class SpeedometerView extends ConstraintLayout {
 
         TypedArray attributes = context.obtainStyledAttributes(attrs,
                 R.styleable.SpeedometerView);
+        textColor = attributes.getColor(R.styleable.SpeedometerView_textColor,
+                SpeedometerColors.getDefaultTextColor());
         speed = attributes.getInt(R.styleable.SpeedometerView_speed,
                 0);
+        speedUnits = (int) attributes.getInt(R.styleable.SpeedometerView_speedUnits,
+                SpeedometerHelper.SPEED_UNITS_KMH);
+        maxScaleValue = attributes.getInt(R.styleable.SpeedometerView_maxScaleValue,
+                SpeedometerHelper.getDefaultMaxScaleValue(speedUnits));
 
         inflateLayout();
 
@@ -52,6 +60,7 @@ public class SpeedometerView extends ConstraintLayout {
         scaleContainer = layout.findViewById(R.id.scale_container);
 
         speedTextView.setText(String.valueOf(speed));
+        speedTextView.setTextColor(textColor);
     }
 
     protected void setSpeed(int speed, byte speedUnits) {
@@ -64,7 +73,7 @@ public class SpeedometerView extends ConstraintLayout {
         return this.speed;
     }
 
-    protected byte getSpeedUnits() {
+    protected int getSpeedUnits() {
         return this.speedUnits;
     }
 

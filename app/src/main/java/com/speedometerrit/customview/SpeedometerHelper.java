@@ -1,6 +1,6 @@
 package com.speedometerrit.customview;
 
-public class DrawingScaleUtil {
+public class SpeedometerHelper {
     public static final byte SPEED_UNITS_KMH = 0;
     public static final byte SPEED_UNITS_MPH = 1;
 
@@ -32,11 +32,11 @@ public class DrawingScaleUtil {
 
     private float scalePadding = SCALE_THICKNESS / 2;
 
-    public DrawingScaleUtil(int speed, byte speedUnits) {
+    public SpeedometerHelper(int speed, byte speedUnits) {
         setSpeed(speed, speedUnits);
     }
 
-    public DrawingScaleUtil() {
+    public SpeedometerHelper() {
         setSpeed(this.speed, this.speedUnits);
     }
 
@@ -56,6 +56,11 @@ public class DrawingScaleUtil {
 
         this.speedAngle = ((float) SCALE_SWEEP_ANGLE
                 * (float) this.speed) / (float) maxScaleValue;
+    }
+
+    public static int getDefaultMaxScaleValue(int speedUnits) {
+        if (speedUnits == SPEED_UNITS_KMH) return DEFAULT_MAX_SCALE_VALUE_KMH;
+        return DEFAULT_MAX_SCALE_VALUE_MPH;
     }
 
     protected float getScalePadding() {

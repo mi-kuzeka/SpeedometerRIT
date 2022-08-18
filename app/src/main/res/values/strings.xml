@@ -1,6 +1,11 @@
 <resources>
     <string name="app_name">Speedometer</string>
+    <!-- Sample strings -->
     <string name="speed_sample">24</string>
     <string name="time_sample">02:49</string>
+    <string name="current_time_sample">134</string>
     <string name="max_speed_sample">134</string>
+    <!-- Description for images -->
+    <string name="top_image_desc">Top image</string>
+    <string name="bottom_image_desc">Bottom image</string>
 </resources>
