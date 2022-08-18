@@ -4,7 +4,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.FrameLayout;
 
-import com.speedometerrit.customview.DotsScaleView;
+import com.speedometerrit.customview.DotsSpeedometerView;
 import com.speedometerrit.customview.DrawingScaleUtil;
 import com.speedometerrit.customview.OneLineScaleView;
 
@@ -23,13 +23,21 @@ public class MainActivity extends AppCompatActivity {
         FrameLayout leftViewContainer = findViewById(R.id.left_view);
         FrameLayout rightViewContainer = findViewById(R.id.right_view);
 
-        DotsScaleView scaleView = new DotsScaleView(this);
-        scaleView.setSpeed(40, DrawingScaleUtil.SPEED_UNITS_KMH);
-        speedometerViewContainer.addView(scaleView);
+//        DotsScaleView scaleView = new DotsScaleView(this);
+//        scaleView.setSpeed(40, DrawingScaleUtil.SPEED_UNITS_KMH);
+//        speedometerViewContainer.addView(scaleView);
 
 //        OneLineScaleView scaleView = new OneLineScaleView(this);
 //        scaleView.setSpeed(120, DrawingScaleUtil.SPEED_UNITS_KMH);
 //        speedometerViewContainer.addView(scaleView);
+
+//        OneLineSpeedometerView speedometerView = new OneLineSpeedometerView(this);
+//        speedometerView.setSpeed(24, DrawingScaleUtil.SPEED_UNITS_KMH);
+//        speedometerViewContainer.addView(speedometerView);
+
+        DotsSpeedometerView speedometerView = new DotsSpeedometerView(this);
+        speedometerView.setSpeed(60, DrawingScaleUtil.SPEED_UNITS_KMH);
+        speedometerViewContainer.addView(speedometerView);
 
         OneLineScaleView scaleView1 = new OneLineScaleView(this);
         scaleView1.setSpeed(120, DrawingScaleUtil.SPEED_UNITS_MPH);

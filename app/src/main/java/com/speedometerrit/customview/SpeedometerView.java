@@ -21,6 +21,7 @@ public class SpeedometerView extends ConstraintLayout {
     TextView speedTextView = null;
     FrameLayout scaleContainer = null;
     int speed = 0;
+    byte speedUnits = 0;
 
     public SpeedometerView(@NonNull Context context) {
         super(context);
@@ -53,13 +54,18 @@ public class SpeedometerView extends ConstraintLayout {
         speedTextView.setText(String.valueOf(speed));
     }
 
-    protected void setSpeed(int speed) {
+    protected void setSpeed(int speed, byte speedUnits) {
         if (speed < 0) this.speed = 0;
         speedTextView.setText(String.valueOf(speed));
+        this.speedUnits = speedUnits;
     }
 
     protected int getSpeed() {
         return this.speed;
+    }
+
+    protected byte getSpeedUnits() {
+        return this.speedUnits;
     }
 
     protected void addScaleView(View scaleView) {
