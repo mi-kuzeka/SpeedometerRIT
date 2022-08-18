@@ -6,7 +6,6 @@ import android.widget.FrameLayout;
 
 import com.speedometerrit.customview.DotsScaleView;
 import com.speedometerrit.customview.DrawingScaleUtil;
-import com.speedometerrit.customview.NeedleView;
 import com.speedometerrit.customview.OneLineScaleView;
 
 public class MainActivity extends AppCompatActivity {
@@ -24,12 +23,12 @@ public class MainActivity extends AppCompatActivity {
         FrameLayout leftViewContainer = findViewById(R.id.left_view);
         FrameLayout rightViewContainer = findViewById(R.id.right_view);
 
-        NeedleView needleView = new NeedleView(this);
-        needleView.setSpeed(56, DrawingScaleUtil.SPEED_UNITS_KMH);
-        speedometerViewContainer.addView(needleView);
+        DotsScaleView scaleView = new DotsScaleView(this);
+        scaleView.setSpeed(40, DrawingScaleUtil.SPEED_UNITS_KMH);
+        speedometerViewContainer.addView(scaleView);
 
-//        DotsScaleView scaleView = new DotsScaleView(this);
-//        scaleView.setSpeed(56, DrawingScaleUtil.SPEED_UNITS_KMH);
+//        OneLineScaleView scaleView = new OneLineScaleView(this);
+//        scaleView.setSpeed(120, DrawingScaleUtil.SPEED_UNITS_KMH);
 //        speedometerViewContainer.addView(scaleView);
 
         OneLineScaleView scaleView1 = new OneLineScaleView(this);

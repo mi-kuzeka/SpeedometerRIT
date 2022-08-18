@@ -13,9 +13,8 @@ public class OneLineScaleView extends View {
 
     // Paint object for coloring and styling
     private final Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-    // Scale border width in pixels
-    private int borderWidth = 10;
     private int scaleSize = 0; // Scale size
+    private float scalePadding = 0; // Padding of scale
     int scaleColor; // Scale color
     // Current speed sector color
     int speedColor;
@@ -37,7 +36,7 @@ public class OneLineScaleView extends View {
         scaleSize = Math.min(getMeasuredWidth(), getMeasuredHeight());
         setMeasuredDimension(scaleSize, scaleSize);
 
-        scaleSize -= borderWidth;
+        scalePadding = drawingScaleUtil.getScalePadding();
     }
 
     private void setDefaultColors() {
@@ -66,10 +65,11 @@ public class OneLineScaleView extends View {
     private void drawScale(Canvas canvas) {
         paint.setColor(scaleColor);
         paint.setStyle(Paint.Style.STROKE);
-        paint.setStrokeWidth(borderWidth);
+        paint.setStrokeWidth(DrawingScaleUtil.SCALE_THICKNESS);
 
         // Draw scale
-        RectF oval = new RectF(borderWidth, borderWidth, scaleSize, scaleSize);
+        RectF oval = new RectF(scalePadding, scalePadding,
+                scaleSize - scalePadding, scaleSize - scalePadding);
         canvas.drawArc(oval, DrawingScaleUtil.SCALE_BEGIN_ANGLE,
                 DrawingScaleUtil.SCALE_SWEEP_ANGLE, false, paint);
 

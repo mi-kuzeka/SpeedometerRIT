@@ -9,7 +9,7 @@ public class DrawingScaleUtil {
     public static final int MAJOR_TICKS = 20;
 
     // Ratio of scale to inner circle
-    public static final double INNER_CIRCLE_RATIO = 1.7;
+    public static final float INNER_CIRCLE_RATIO = 1.7f;
 
     public static final int DEFAULT_MAX_SCALE_VALUE_KMH = 240;
     public static final int DEFAULT_MAX_SCALE_VALUE_MPH = 160;
@@ -29,6 +29,8 @@ public class DrawingScaleUtil {
     private int maxScaleValue;
     private int scaleSectorsCount;
     private float speedAngle;
+
+    private float scalePadding = SCALE_THICKNESS / 2;
 
     public DrawingScaleUtil(int speed, byte speedUnits) {
         setSpeed(speed, speedUnits);
@@ -54,6 +56,10 @@ public class DrawingScaleUtil {
 
         this.speedAngle = ((float) SCALE_SWEEP_ANGLE
                 * (float) this.speed) / (float) maxScaleValue;
+    }
+
+    protected float getScalePadding() {
+        return this.scalePadding;
     }
 
     protected int getMaxScaleValue() {
@@ -100,12 +106,12 @@ public class DrawingScaleUtil {
         return this.speed >= dotNumber * MAJOR_TICKS;
     }
 
-    public static float getDotCircleRadius(float scaleSize) {
+    protected float getDotCircleRadius(float scaleSize) {
         return scaleSize / 2 - SCALE_THICKNESS - DOTS_MARGIN;
     }
 
-    public static float getDotOffset(float circleRadius) {
-        return circleRadius + SCALE_THICKNESS + DOTS_MARGIN + DOT_RADIUS;
+    protected float getDotOffset(float circleRadius) {
+        return circleRadius + scalePadding + DOTS_MARGIN + DOT_RADIUS;
     }
 
     /**
@@ -122,25 +128,33 @@ public class DrawingScaleUtil {
         return (float) ((Math.sin(Math.toRadians(angle)) * circleRadius) + dotOffset);
     }
 
-    public static int getInnerCircleSize(int scaleSize) {
-        return (int) Math.round(scaleSize / INNER_CIRCLE_RATIO);
+    protected float getInnerCircleSize(float scaleSize) {
+        return scaleSize / INNER_CIRCLE_RATIO;
     }
 
-    public static int getInnerCirclePadding(int scaleSize, int innerCircleSize) {
+    protected float getInnerCirclePadding(float scaleSize, float innerCircleSize) {
         return (scaleSize - innerCircleSize) / 2;
     }
 
-    public static int getInnerCircleRightBottomPadding(
-            int innerCircleSize, int innerCirclePadding) {
+    protected float getInnerCircleRightBottomPadding(
+            float innerCircleSize, float innerCirclePadding) {
 
         return innerCircleSize + innerCirclePadding;
     }
 
-    public static float getNeedleOffset() {
+    protected float getNeedleOffset() {
         return SCALE_THICKNESS + (DOTS_MARGIN / 2);
     }
 
     public static float getNeedleLength(float viewSize, float needleOffset) {
         return (viewSize / 2) - needleOffset;
+    }
+
+    protected float getNeedleAngle() {
+        return this.speedAngle - (180 - SCALE_BEGIN_ANGLE);
+    }
+
+    protected float getCenterCircleRadius(float center, float innerCirclePadding) {
+        return center - innerCirclePadding - scalePadding;
     }
 }

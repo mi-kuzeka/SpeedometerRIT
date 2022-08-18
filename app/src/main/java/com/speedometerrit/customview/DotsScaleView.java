@@ -2,7 +2,9 @@ package com.speedometerrit.customview;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.graphics.RectF;
 import android.view.View;
 
@@ -13,11 +15,14 @@ public class DotsScaleView extends View {
     // Paint object for coloring and styling
     private final Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
-    private int scaleSize = 0; // Scale size
-    private int innerCircleSize = 0; // Inner circle size
+    private float scaleSize = 0; // Scale size
+    private float innerCircleSize = 0; // Inner circle size
+    private float scalePadding = 0; // Padding of scale
 
-    int innerCircleColor; // Inner circle color
-    int scaleColor; // Scale color
+    private int innerCircleColor; // Inner circle color
+    private int scaleColor; // Scale color
+    private int needleColor; // Needle color
+    private int centerCircleColor; // Center circle color
 
     public DotsScaleView(Context context) {
         super(context);
@@ -34,15 +39,17 @@ public class DotsScaleView extends View {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 
         scaleSize = Math.min(getMeasuredWidth(), getMeasuredHeight());
-        setMeasuredDimension(scaleSize, scaleSize);
+        setMeasuredDimension((int) scaleSize, (int) scaleSize);
 
-        scaleSize -= DrawingScaleUtil.SCALE_THICKNESS;
-        innerCircleSize = DrawingScaleUtil.getInnerCircleSize(scaleSize);
+        innerCircleSize = drawingScaleUtil.getInnerCircleSize(scaleSize);
+        scalePadding = drawingScaleUtil.getScalePadding();
     }
 
     private void setDefaultColors() {
         this.innerCircleColor = getResources().getColor(R.color.gray);
         this.scaleColor = getResources().getColor(R.color.turquoise);
+        this.needleColor = getResources().getColor(R.color.white);
+        this.centerCircleColor = getResources().getColor(R.color.black);
     }
 
     public void setInnerCircleColor(int color) {
@@ -64,32 +71,20 @@ public class DotsScaleView extends View {
 
 
     private void drawScale(Canvas canvas) {
-        paint.setColor(scaleColor);
-        paint.setStyle(Paint.Style.STROKE);
-        paint.setStrokeWidth(DrawingScaleUtil.SCALE_THICKNESS);
-
-        float ovalPadding = DrawingScaleUtil.SCALE_THICKNESS;
-        // Draw scale
-        RectF oval = new RectF(ovalPadding, ovalPadding, scaleSize, scaleSize);
-        canvas.drawArc(oval, DrawingScaleUtil.SCALE_BEGIN_ANGLE,
-                DrawingScaleUtil.SCALE_SWEEP_ANGLE, false, paint);
+        // Draw outer circle
+        drawOuterCircle(canvas);
 
         // Draw inner circle
-        paint.setColor(innerCircleColor);
-
-        int padding = DrawingScaleUtil
+        float innerCirclePadding = drawingScaleUtil
                 .getInnerCirclePadding(scaleSize, innerCircleSize);
-        int rightBottomPadding = DrawingScaleUtil
-                .getInnerCircleRightBottomPadding(innerCircleSize, padding);
+        float innerCircleRightBottomPadding = drawingScaleUtil
+                .getInnerCircleRightBottomPadding(innerCircleSize, innerCirclePadding);
 
-        RectF innerOval = new RectF(padding, padding,
-                rightBottomPadding, rightBottomPadding);
-        canvas.drawArc(innerOval, DrawingScaleUtil.SCALE_BEGIN_ANGLE,
-                DrawingScaleUtil.SCALE_SWEEP_ANGLE, false, paint);
+        drawInnerCircle(canvas, innerCirclePadding, innerCircleRightBottomPadding);
 
         // Draw dots
-        float circleRadius = DrawingScaleUtil.getDotCircleRadius((float) scaleSize);
-        float dotOffset = DrawingScaleUtil.getDotOffset(circleRadius);
+        float circleRadius = drawingScaleUtil.getDotCircleRadius((float) scaleSize);
+        float dotOffset = drawingScaleUtil.getDotOffset(circleRadius);
         paint.setStyle(Paint.Style.FILL);
         paint.setStrokeWidth(0);
 
@@ -97,14 +92,45 @@ public class DotsScaleView extends View {
              dotNumber <= drawingScaleUtil.getDotsCount();
              dotNumber++) {
 
-            drawDots(dotNumber, circleRadius, dotOffset, canvas);
+            drawDots(canvas, dotNumber, circleRadius, dotOffset);
         }
+
+        float center = (float) scaleSize / 2;
+
+        // Draw the needle
+        drawNeedle(canvas, center);
+
+        // Draw center circle
+        float centerCircleRadius =
+                drawingScaleUtil.getCenterCircleRadius(center, innerCirclePadding);
+        drawCenterCircle(canvas, center, centerCircleRadius);
     }
 
-    private void drawDots(int dotNumber,
+    private void drawOuterCircle(Canvas canvas) {
+        paint.setColor(scaleColor);
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setStrokeWidth(DrawingScaleUtil.SCALE_THICKNESS);
+
+        RectF oval = new RectF(scalePadding, scalePadding,
+                scaleSize - scalePadding, scaleSize - scalePadding);
+        canvas.drawArc(oval, DrawingScaleUtil.SCALE_BEGIN_ANGLE,
+                DrawingScaleUtil.SCALE_SWEEP_ANGLE, false, paint);
+    }
+
+    private void drawInnerCircle(Canvas canvas,
+                                 float padding,
+                                 float rightBottomPadding) {
+        paint.setColor(innerCircleColor);
+        RectF innerOval = new RectF(padding, padding,
+                rightBottomPadding, rightBottomPadding);
+        canvas.drawArc(innerOval, DrawingScaleUtil.SCALE_BEGIN_ANGLE,
+                DrawingScaleUtil.SCALE_SWEEP_ANGLE, false, paint);
+    }
+
+    private void drawDots(Canvas canvas,
+                          int dotNumber,
                           float circleRadius,
-                          float dotOffset,
-                          Canvas canvas) {
+                          float dotOffset) {
         if (drawingScaleUtil.pointReached(dotNumber)) {
             paint.setColor(getResources().getColor(R.color.white));
         } else {
@@ -115,5 +141,52 @@ public class DotsScaleView extends View {
         float x = DrawingScaleUtil.getDotX(angle, circleRadius, dotOffset);
         float y = DrawingScaleUtil.getDotY(angle, circleRadius, dotOffset);
         canvas.drawCircle(x, y, DrawingScaleUtil.DOT_RADIUS, paint);
+    }
+
+    private void drawNeedle(Canvas canvas, float center) {
+        paint.setColor(needleColor);
+        paint.setStyle(Paint.Style.FILL);
+
+        float needleOffset = drawingScaleUtil.getNeedleOffset();
+        float needleLength = DrawingScaleUtil.getNeedleLength(scaleSize, needleOffset);
+
+        float topLeftX = needleOffset;
+        float topLeftY = center - DrawingScaleUtil.NEEDLE_END_WIDTH / 2;
+
+        float topRightX = needleLength + topLeftX;
+        float topRightY = center - DrawingScaleUtil.NEEDLE_BEGIN_WIDTH / 2;
+
+        float bottomRightX = topRightX;
+        float bottomRightY = center + DrawingScaleUtil.NEEDLE_BEGIN_WIDTH / 2;
+
+        float bottomLeftX = topLeftX;
+        float bottomLeftY = center + DrawingScaleUtil.NEEDLE_END_WIDTH / 2;
+
+        Path needle = new Path();
+        needle.setFillType(Path.FillType.EVEN_ODD);
+
+        needle.moveTo(topLeftX, topLeftY);
+        needle.lineTo(topRightX, topRightY);
+        needle.lineTo(bottomRightX, bottomRightY);
+        needle.lineTo(bottomLeftX, bottomLeftY);
+        needle.lineTo(topLeftX, topLeftY);
+        needle.close();
+
+        Matrix matrix = new Matrix();
+        RectF bounds = new RectF();
+        needle.computeBounds(bounds, true);
+        matrix.postRotate(drawingScaleUtil.getNeedleAngle(), center, center);
+        needle.transform(matrix);
+
+        canvas.drawPath(needle, paint);
+    }
+
+    private void drawCenterCircle(Canvas canvas,
+                                  float center,
+                                  float radius) {
+        paint.setColor(centerCircleColor);
+        paint.setStyle(Paint.Style.FILL);
+
+        canvas.drawCircle(center, center, radius, paint);
     }
 }
