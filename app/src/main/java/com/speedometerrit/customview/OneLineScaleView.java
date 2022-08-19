@@ -4,12 +4,11 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.RectF;
-import android.view.View;
 
-import com.speedometerrit.helpers.SpeedometerColors;
+import com.speedometerrit.helpers.ColorManager;
 import com.speedometerrit.helpers.SpeedometerHelper;
 
-public class OneLineScaleView extends View {
+public class OneLineScaleView extends ScaleView {
     private final SpeedometerHelper speedometerHelper;
 
     // Paint object for coloring and styling
@@ -26,7 +25,8 @@ public class OneLineScaleView extends View {
         speedometerHelper = new SpeedometerHelper();
     }
 
-    public void setSpeed(int speed, byte speedUnits) {
+    @Override
+    public void setSpeed(int speed, int speedUnits) {
         speedometerHelper.setSpeed(speed, speedUnits);
     }
 
@@ -41,22 +41,12 @@ public class OneLineScaleView extends View {
     }
 
     private void setDefaultColors() {
-        this.scaleColor = getColor(SpeedometerColors.getDefaultOneLineScaleColor());
-        this.speedColor = getColor(SpeedometerColors.getDefaultSpeedProgressColor());
+        this.scaleColor = getColor(ColorManager.getDefaultOneLineScaleColor());
+        this.speedColor = getColor(ColorManager.getMainColorId());
     }
 
     private int getColor(int colorId) {
         return getResources().getColor(colorId);
-    }
-
-    public void setScaleColor(int colorId) {
-        this.scaleColor = getColor(colorId);
-        //TODO: changeScaleColor();
-    }
-
-    public void setSpeedColor(int colorId) {
-        this.speedColor = getColor(colorId);
-        //TODO: changeScaleColor();
     }
 
     @Override
@@ -66,8 +56,7 @@ public class OneLineScaleView extends View {
         drawScale(canvas);
     }
 
-
-    private void drawScale(Canvas canvas) {
+    protected void drawScale(Canvas canvas) {
         paint.setColor(scaleColor);
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeWidth(SpeedometerHelper.SCALE_THICKNESS);

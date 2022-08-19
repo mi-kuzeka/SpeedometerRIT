@@ -8,12 +8,11 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.RectF;
 import android.graphics.Shader;
-import android.view.View;
 
-import com.speedometerrit.helpers.SpeedometerColors;
+import com.speedometerrit.helpers.ColorManager;
 import com.speedometerrit.helpers.SpeedometerHelper;
 
-public class DotsScaleView extends View {
+public class DotsScaleView extends ScaleView {
     private final SpeedometerHelper speedometerHelper;
     // Paint object for coloring and styling
     private final Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -33,7 +32,8 @@ public class DotsScaleView extends View {
         speedometerHelper = new SpeedometerHelper();
     }
 
-    public void setSpeed(int speed, byte speedUnits) {
+    @Override
+    public void setSpeed(int speed, int speedUnits) {
         speedometerHelper.setSpeed(speed, speedUnits);
     }
 
@@ -49,10 +49,10 @@ public class DotsScaleView extends View {
     }
 
     private void setDefaultColors() {
-        this.innerCircleColor = getColor(SpeedometerColors.getInnerCircleColor());
-        this.scaleColor = getColor(SpeedometerColors.getDefaultDotsScaleColor());
-        this.needleColor = getColor(SpeedometerColors.getNeedleColor());
-        this.centerCircleColor = getColor(SpeedometerColors.getCenterCircleColor());
+        this.innerCircleColor = getColor(ColorManager.getInnerCircleColor());
+        this.scaleColor = getColor(ColorManager.getMainColorId());
+        this.needleColor = getColor(ColorManager.getNeedleColor());
+        this.centerCircleColor = getColor(ColorManager.getCenterCircleColor());
     }
 
     private int getColor(int colorId) {
@@ -61,12 +61,6 @@ public class DotsScaleView extends View {
 
     public void setInnerCircleColor(int colorId) {
         this.innerCircleColor = getColor(colorId);
-        //TODO: changeScaleColor();
-    }
-
-    public void setScaleColor(int colorId) {
-        this.scaleColor = getColor(colorId);
-        //TODO: changeScaleColor();
     }
 
     @Override
@@ -76,8 +70,7 @@ public class DotsScaleView extends View {
         drawScale(canvas);
     }
 
-
-    private void drawScale(Canvas canvas) {
+    protected void drawScale(Canvas canvas) {
         // Draw outer circle
         drawOuterCircle(canvas);
 
@@ -130,7 +123,7 @@ public class DotsScaleView extends View {
 
     private LinearGradient getScaleGradient(float circleRadius, int scaleColor) {
         // Create the gradient shader
-        int endColor = getColor(SpeedometerColors.getScaleGradientColor());
+        int endColor = getColor(ColorManager.getScaleGradientColor());
         int[] colors = {scaleColor, scaleColor, endColor};
         float[] positions = {0, 0.75f, 1};
         float gradientBeginAngleOffset = 10f;
@@ -166,9 +159,9 @@ public class DotsScaleView extends View {
                           float dotOffset) {
         int pointColorId;
         if (speedometerHelper.pointReached(dotNumber)) {
-            pointColorId = SpeedometerColors.getReachedPointColor();
+            pointColorId = ColorManager.getReachedPointColor();
         } else {
-            pointColorId = SpeedometerColors.getPointColor();
+            pointColorId = ColorManager.getPointColor();
         }
         paint.setColor(getColor(pointColorId));
 

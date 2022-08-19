@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 import com.speedometerrit.R;
 import com.speedometerrit.customview.OneLineScaleView;
-import com.speedometerrit.helpers.SpeedometerColors;
+import com.speedometerrit.helpers.ColorManager;
 import com.speedometerrit.helpers.SpeedometerHelper;
 
 public class MiniSpeedometerView extends ConstraintLayout {
@@ -21,7 +21,6 @@ public class MiniSpeedometerView extends ConstraintLayout {
 
     int speed = 0;
     int speedUnits = 0;
-    int maxScaleValue;
     int textColor;
 
     public MiniSpeedometerView(Context context) {
@@ -40,7 +39,7 @@ public class MiniSpeedometerView extends ConstraintLayout {
         speedTextView = layout.findViewById(R.id.mini_speed_text_view);
         amPmImageView = layout.findViewById(R.id.am_pm_image_view);
 
-        textColor = getResources().getColor(SpeedometerColors.getDefaultTextColor());
+        textColor = getResources().getColor(ColorManager.getDefaultTextColor());
         speedTextView.setTextColor(textColor);
         speedTextView.setText(String.valueOf(speed));
 

@@ -25,7 +25,7 @@ public class SpeedometerHelper {
     public static final float NEEDLE_BEGIN_WIDTH = 40f;
 
     private int speed;
-    private byte speedUnits;
+    private int speedUnits;
     private int maxScaleValue;
     private int scaleSectorsCount;
     private float speedAngle;
@@ -40,7 +40,7 @@ public class SpeedometerHelper {
         setSpeed(this.speed, this.speedUnits);
     }
 
-    public void setSpeed(int speed, byte speedUnits) {
+    public void setSpeed(int speed, int speedUnits) {
         this.speedUnits = speedUnits;
         if (speedUnits == SPEED_UNITS_KMH) {
             this.maxScaleValue = DEFAULT_MAX_SCALE_VALUE_KMH;
@@ -82,7 +82,7 @@ public class SpeedometerHelper {
         return this.speed;
     }
 
-    public byte getSpeedUnits() {
+    public int getSpeedUnits() {
         return this.speedUnits;
     }
 

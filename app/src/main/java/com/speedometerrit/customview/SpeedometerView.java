@@ -8,18 +8,19 @@ import android.support.constraint.ConstraintLayout;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.speedometerrit.R;
-import com.speedometerrit.helpers.SpeedometerColors;
+import com.speedometerrit.helpers.ColorManager;
 import com.speedometerrit.helpers.SpeedometerHelper;
 
 public class SpeedometerView extends ConstraintLayout {
     ConstraintLayout layout = null;
     TextView speedTextView = null;
     FrameLayout scaleContainer = null;
+    ScaleView scaleView;
+
     int speed = 0;
     int speedUnits = 0;
     int maxScaleValue;
@@ -27,7 +28,7 @@ public class SpeedometerView extends ConstraintLayout {
 
     public SpeedometerView(@NonNull Context context) {
         super(context);
-        textColor = getResources().getColor(SpeedometerColors.getDefaultTextColor());
+        textColor = getResources().getColor(ColorManager.getDefaultTextColor());
         inflateLayout();
     }
 
@@ -37,7 +38,7 @@ public class SpeedometerView extends ConstraintLayout {
         TypedArray attributes = context.obtainStyledAttributes(attrs,
                 R.styleable.SpeedometerView);
         textColor = attributes.getColor(R.styleable.SpeedometerView_textColor,
-                SpeedometerColors.getDefaultTextColor());
+                ColorManager.getDefaultTextColor());
         speed = attributes.getInt(R.styleable.SpeedometerView_speed,
                 0);
         speedUnits = (int) attributes.getInt(R.styleable.SpeedometerView_speedUnits,
@@ -78,12 +79,13 @@ public class SpeedometerView extends ConstraintLayout {
         return this.speedUnits;
     }
 
-    protected void addScaleView(View scaleView) {
+    protected void addScaleView(ScaleView scaleView) {
+        scaleContainer.removeAllViews();
+        this.scaleView = scaleView;
         scaleContainer.addView(scaleView);
     }
 
     protected void setTextSize(float textSize) {
         speedTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
     }
-
 }

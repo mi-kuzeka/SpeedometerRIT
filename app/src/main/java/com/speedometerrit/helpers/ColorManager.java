@@ -4,11 +4,28 @@ import com.speedometerrit.R;
 
 import java.util.Random;
 
-public class SpeedometerColors {
-    private SpeedometerColors() {
+public class ColorManager {
+    private static int colorId = getDefaultMainColor();
+
+    private ColorManager() {
     }
 
-    public static int getDefaultDotsScaleColor() {
+    public static int getMainColorId() {
+        return colorId;
+    }
+
+    public static void setRandomMainColor() {
+        int oldColorId = colorId;
+        while (oldColorId == colorId) {
+            colorId = getRandomColor();
+        }
+    }
+
+    public static void setMainColor(int colorId) {
+        ColorManager.colorId = colorId;
+    }
+
+    public static int getDefaultMainColor() {
         return R.color.turquoise;
     }
 
@@ -17,7 +34,8 @@ public class SpeedometerColors {
     }
 
     public static int getRandomColor() {
-        int[] colors = {R.color.turquoise,
+        int[] colors = {
+                R.color.turquoise,
                 R.color.green,
                 R.color.azure,
                 R.color.purple,
@@ -36,10 +54,6 @@ public class SpeedometerColors {
 
     public static int getDefaultOneLineScaleColor() {
         return R.color.dark_grey;
-    }
-
-    public static int getDefaultSpeedProgressColor() {
-        return R.color.turquoise;
     }
 
     public static int getInnerCircleColor() {

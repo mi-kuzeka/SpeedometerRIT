@@ -8,7 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.speedometerrit.R;
-import com.speedometerrit.helpers.SpeedometerColors;
+import com.speedometerrit.helpers.ColorManager;
 
 public class MiniWidget extends ConstraintLayout {
     ConstraintLayout layout = null;
@@ -34,7 +34,7 @@ public class MiniWidget extends ConstraintLayout {
         textView = layout.findViewById(R.id.text_view);
         bottomImageView = layout.findViewById(R.id.bottom_image);
 
-        textColor = getResources().getColor(SpeedometerColors.getDefaultTextColor());
+        textColor = getResources().getColor(ColorManager.getDefaultTextColor());
         textView.setTextColor(textColor);
     }
 

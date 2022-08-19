@@ -1,22 +1,26 @@
 package com.speedometerrit;
 
-import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 import android.widget.FrameLayout;
 
 import com.speedometerrit.customview.SpeedometerView;
 import com.speedometerrit.helpers.RandomWidgetsGenerator;
+import com.speedometerrit.helpers.ColorManager;
+import com.speedometerrit.helpers.SpeedometerHelper;
 import com.speedometerrit.speedometerwidgets.CurrentTimeView;
 import com.speedometerrit.speedometerwidgets.DotsSpeedometerView;
-import com.speedometerrit.helpers.SpeedometerHelper;
 import com.speedometerrit.speedometerwidgets.MaxSpeedView;
 import com.speedometerrit.speedometerwidgets.MiniSpeedometerView;
 import com.speedometerrit.speedometerwidgets.OneLineSpeedometerView;
 
 
 public class MainActivity extends AppCompatActivity {
-    private ConstraintLayout mainLayout;
+    GestureDetector gestureDetector;
+    private boolean widgetsAreLoaded = false;
+
     private FrameLayout speedometerViewContainer;
     private FrameLayout leftViewContainer;
     private FrameLayout rightViewContainer;
@@ -36,14 +40,20 @@ public class MainActivity extends AppCompatActivity {
 
         setRandomViews();
 
-        mainLayout = findViewById(R.id.main_layout);
-        mainLayout.setOnClickListener(v -> setRandomViews());
+        gestureDetector = new GestureDetector(this, new GestureListener());
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent e) {
+        return gestureDetector.onTouchEvent(e);
     }
 
     private void setRandomViews() {
+        widgetsAreLoaded = false;
         setRandomCentralWidget();
         setRandomMiniWidget(leftViewContainer);
         setRandomMiniWidget(rightViewContainer);
+        widgetsAreLoaded = true;
     }
 
     private void setRandomCentralWidget() {
@@ -51,6 +61,18 @@ public class MainActivity extends AppCompatActivity {
 
         if (speedometerViewContainer.getTag() == widgetName) return;
 
+        setCentralWidget(widgetName);
+    }
+
+    private void setRandomMiniWidget(FrameLayout viewContainer) {
+        String widgetName = RandomWidgetsGenerator.getMiniWidgetName();
+
+        if (viewContainer.getTag() == widgetName) return;
+
+        setMiniWidget(viewContainer, widgetName);
+    }
+
+    private void setCentralWidget(String widgetName) {
         speedometerViewContainer.removeAllViews();
         speedometerViewContainer.setTag(widgetName);
         SpeedometerView speedometerView;
@@ -65,11 +87,7 @@ public class MainActivity extends AppCompatActivity {
         speedometerViewContainer.addView(speedometerView);
     }
 
-    private void setRandomMiniWidget(FrameLayout viewContainer) {
-        String widgetName = RandomWidgetsGenerator.getMiniWidgetName();
-
-        if (viewContainer.getTag() == widgetName) return;
-
+    private void setMiniWidget(FrameLayout viewContainer, String widgetName) {
         viewContainer.removeAllViews();
         viewContainer.setTag(widgetName);
 
@@ -92,6 +110,44 @@ public class MainActivity extends AppCompatActivity {
                 break;
             default:
                 break;
+        }
+    }
+
+    private class GestureListener extends GestureDetector.SimpleOnGestureListener {
+
+        @Override
+        public boolean onDown(MotionEvent e) {
+            return true;
+        }
+
+        @Override
+        public boolean onSingleTapConfirmed(MotionEvent e) {
+            if (!widgetsAreLoaded) return true;
+            setRandomViews();
+            return true;
+        }
+
+        // Event when double tap occurs
+        @Override
+        public boolean onDoubleTap(MotionEvent e) {
+            if (!widgetsAreLoaded) return true;
+
+            ColorManager.setRandomMainColor();
+
+            // Reload views
+            String centralWidgetName = (String) speedometerViewContainer.getTag();
+            speedometerViewContainer.removeAllViews();
+            setCentralWidget(centralWidgetName);
+
+            String leftWidgetName = (String) leftViewContainer.getTag();
+            leftViewContainer.removeAllViews();
+            setMiniWidget(leftViewContainer, leftWidgetName);
+
+            String rightWidgetName = (String) rightViewContainer.getTag();
+            rightViewContainer.removeAllViews();
+            setMiniWidget(rightViewContainer, rightWidgetName);
+
+            return true;
         }
     }
 }
