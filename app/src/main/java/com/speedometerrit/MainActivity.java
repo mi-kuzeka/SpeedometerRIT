@@ -1,7 +1,9 @@
 package com.speedometerrit;
 
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.transition.TransitionManager;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.widget.FrameLayout;
@@ -21,6 +23,7 @@ public class MainActivity extends AppCompatActivity {
     GestureDetector gestureDetector;
     private boolean widgetsAreLoaded = false;
 
+    private ConstraintLayout transitionsContainer;
     private FrameLayout speedometerViewContainer;
     private FrameLayout leftViewContainer;
     private FrameLayout rightViewContainer;
@@ -34,6 +37,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void init() {
+        transitionsContainer = findViewById(R.id.main_layout);
+
         speedometerViewContainer = findViewById(R.id.speedometer_view);
         leftViewContainer = findViewById(R.id.left_view);
         rightViewContainer = findViewById(R.id.right_view);
@@ -50,15 +55,14 @@ public class MainActivity extends AppCompatActivity {
 
     private void setRandomViews() {
         widgetsAreLoaded = false;
-        setRandomCentralWidget();
         setRandomMiniWidget(leftViewContainer);
+        setRandomCentralWidget();
         setRandomMiniWidget(rightViewContainer);
         widgetsAreLoaded = true;
     }
 
     private void setRandomCentralWidget() {
         String widgetName = RandomWidgetsGenerator.getCentralWidgetName();
-
         if (speedometerViewContainer.getTag() == widgetName) return;
 
         setCentralWidget(widgetName);
@@ -66,15 +70,15 @@ public class MainActivity extends AppCompatActivity {
 
     private void setRandomMiniWidget(FrameLayout viewContainer) {
         String widgetName = RandomWidgetsGenerator.getMiniWidgetName();
-
         if (viewContainer.getTag() == widgetName) return;
 
         setMiniWidget(viewContainer, widgetName);
     }
 
     private void setCentralWidget(String widgetName) {
-        speedometerViewContainer.removeAllViews();
         speedometerViewContainer.setTag(widgetName);
+        speedometerViewContainer.removeAllViews();
+
         SpeedometerView speedometerView;
 
         if (RandomWidgetsGenerator.DOTS_SPEEDOMETER_VIEW.equals(widgetName)) {
@@ -88,8 +92,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setMiniWidget(FrameLayout viewContainer, String widgetName) {
-        viewContainer.removeAllViews();
         viewContainer.setTag(widgetName);
+        viewContainer.removeAllViews();
 
         switch (widgetName) {
             case RandomWidgetsGenerator.MINI_SPEEDOMETER_VIEW:
@@ -123,6 +127,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public boolean onSingleTapConfirmed(MotionEvent e) {
             if (!widgetsAreLoaded) return true;
+            TransitionManager.beginDelayedTransition(transitionsContainer);
             setRandomViews();
             return true;
         }
