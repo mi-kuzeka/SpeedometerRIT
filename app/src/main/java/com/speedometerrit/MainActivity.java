@@ -1,65 +1,97 @@
 package com.speedometerrit;
 
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.FrameLayout;
 
+import com.speedometerrit.customview.SpeedometerView;
+import com.speedometerrit.helpers.RandomWidgetsGenerator;
 import com.speedometerrit.speedometerwidgets.CurrentTimeView;
 import com.speedometerrit.speedometerwidgets.DotsSpeedometerView;
-import com.speedometerrit.speedometerwidgets.MaxSpeedView;
 import com.speedometerrit.helpers.SpeedometerHelper;
+import com.speedometerrit.speedometerwidgets.MaxSpeedView;
 import com.speedometerrit.speedometerwidgets.MiniSpeedometerView;
+import com.speedometerrit.speedometerwidgets.OneLineSpeedometerView;
 
-import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity {
+    private ConstraintLayout mainLayout;
+    private FrameLayout speedometerViewContainer;
+    private FrameLayout leftViewContainer;
+    private FrameLayout rightViewContainer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        setViews();
+        init();
     }
 
-    private void setViews() {
-        FrameLayout speedometerViewContainer = findViewById(R.id.speedometer_view);
-        FrameLayout leftViewContainer = findViewById(R.id.left_view);
-        FrameLayout rightViewContainer = findViewById(R.id.right_view);
+    private void init() {
+        speedometerViewContainer = findViewById(R.id.speedometer_view);
+        leftViewContainer = findViewById(R.id.left_view);
+        rightViewContainer = findViewById(R.id.right_view);
 
-//        DotsScaleView scaleView = new DotsScaleView(this);
-//        scaleView.setSpeed(40, DrawingScaleUtil.SPEED_UNITS_KMH);
-//        speedometerViewContainer.addView(scaleView);
+        setRandomViews();
 
-//        OneLineScaleView scaleView = new OneLineScaleView(this);
-//        scaleView.setSpeed(120, DrawingScaleUtil.SPEED_UNITS_KMH);
-//        speedometerViewContainer.addView(scaleView);
+        mainLayout = findViewById(R.id.main_layout);
+        mainLayout.setOnClickListener(v -> setRandomViews());
+    }
 
-//        OneLineSpeedometerView speedometerView = new OneLineSpeedometerView(this);
-//        speedometerView.setSpeed(24, DrawingScaleUtil.SPEED_UNITS_KMH);
-//        speedometerViewContainer.addView(speedometerView);
+    private void setRandomViews() {
+        setRandomCentralWidget();
+        setRandomMiniWidget(leftViewContainer);
+        setRandomMiniWidget(rightViewContainer);
+    }
 
-        DotsSpeedometerView speedometerView = new DotsSpeedometerView(this);
-        speedometerView.setSpeed(60, SpeedometerHelper.SPEED_UNITS_KMH);
+    private void setRandomCentralWidget() {
+        String widgetName = RandomWidgetsGenerator.getCentralWidgetName();
+
+        if (speedometerViewContainer.getTag() == widgetName) return;
+
+        speedometerViewContainer.removeAllViews();
+        speedometerViewContainer.setTag(widgetName);
+        SpeedometerView speedometerView;
+
+        if (RandomWidgetsGenerator.DOTS_SPEEDOMETER_VIEW.equals(widgetName)) {
+            speedometerView = new DotsSpeedometerView(this);
+        } else {
+            speedometerView = new OneLineSpeedometerView(this);
+        }
+        //TODO set speed and units
+        speedometerView.setSpeed(24, SpeedometerHelper.SPEED_UNITS_MPH);
         speedometerViewContainer.addView(speedometerView);
+    }
 
-//        MaxSpeedView maxSpeedView = new MaxSpeedView(this);
-//        maxSpeedView.setMaxSpeed(134, SpeedometerHelper.SPEED_UNITS_MPH);
-//        leftViewContainer.addView(maxSpeedView);
-//
-        MiniSpeedometerView scaleView1 = new MiniSpeedometerView(this);
-        scaleView1.setSpeed(24, SpeedometerHelper.SPEED_UNITS_MPH);
-        leftViewContainer.addView(scaleView1);
+    private void setRandomMiniWidget(FrameLayout viewContainer) {
+        String widgetName = RandomWidgetsGenerator.getMiniWidgetName();
 
-        CurrentTimeView currentTimeView = new CurrentTimeView(this);
-        rightViewContainer.addView(currentTimeView);
+        if (viewContainer.getTag() == widgetName) return;
 
-//        OneLineScaleView scaleView2 = new OneLineScaleView(this);
-//        scaleView2.setSpeed(120, SpeedometerHelper.SPEED_UNITS_KMH);
-//        rightViewContainer.addView(scaleView2);
-//        SpeedometerView speedometerView = new SpeedometerView(this);
-//        speedometerView.setSpeed(24);
-//        speedometerView.setTextSize(getResources().getDimension(R.dimen.speedometer_text_size));
-//        speedometerViewContainer.addView(speedometerView);
+        viewContainer.removeAllViews();
+        viewContainer.setTag(widgetName);
+
+        switch (widgetName) {
+            case RandomWidgetsGenerator.MINI_SPEEDOMETER_VIEW:
+                MiniSpeedometerView speedometerView = new MiniSpeedometerView(this);
+                //TODO set speed and units
+                speedometerView.setSpeed(35, SpeedometerHelper.SPEED_UNITS_MPH);
+                viewContainer.addView(speedometerView);
+                break;
+            case RandomWidgetsGenerator.MAX_SPEED_VIEW:
+                MaxSpeedView maxSpeedView = new MaxSpeedView(this);
+                //TODO set speed and units
+                maxSpeedView.setMaxSpeed(135, SpeedometerHelper.SPEED_UNITS_MPH);
+                viewContainer.addView(maxSpeedView);
+                break;
+            case RandomWidgetsGenerator.CURRENT_TIME_VIEW:
+                CurrentTimeView currentTimeView = new CurrentTimeView(this);
+                viewContainer.addView(currentTimeView);
+                break;
+            default:
+                break;
+        }
     }
 }

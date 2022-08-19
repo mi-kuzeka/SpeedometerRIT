@@ -64,7 +64,7 @@ public class SpeedometerView extends ConstraintLayout {
         speedTextView.setTextColor(textColor);
     }
 
-    protected void setSpeed(int speed, byte speedUnits) {
+    public void setSpeed(int speed, byte speedUnits) {
         if (speed < 0) this.speed = 0;
         speedTextView.setText(String.valueOf(speed));
         this.speedUnits = speedUnits;
