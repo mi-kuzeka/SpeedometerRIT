@@ -27,6 +27,7 @@ public class SpeedometerView extends ConstraintLayout {
 
     public SpeedometerView(@NonNull Context context) {
         super(context);
+        textColor = getResources().getColor(SpeedometerColors.getDefaultTextColor());
         inflateLayout();
     }
 

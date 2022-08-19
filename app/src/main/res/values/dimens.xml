@@ -8,4 +8,5 @@
     <dimen name="speedometer_text_size">40sp</dimen>
     <dimen name="mini_view_text_size">24sp</dimen>
     <dimen name="mini_view_text_margin">15dp</dimen>
+    <dimen name="mini_speedometer_padding">10dp</dimen>
 </resources>

@@ -8,6 +8,7 @@ import com.speedometerrit.speedometerwidgets.CurrentTimeView;
 import com.speedometerrit.speedometerwidgets.DotsSpeedometerView;
 import com.speedometerrit.speedometerwidgets.MaxSpeedView;
 import com.speedometerrit.helpers.SpeedometerHelper;
+import com.speedometerrit.speedometerwidgets.MiniSpeedometerView;
 
 import java.util.Calendar;
 
@@ -42,13 +43,13 @@ public class MainActivity extends AppCompatActivity {
         speedometerView.setSpeed(60, SpeedometerHelper.SPEED_UNITS_KMH);
         speedometerViewContainer.addView(speedometerView);
 
-        MaxSpeedView maxSpeedView = new MaxSpeedView(this);
-        maxSpeedView.setMaxSpeed(134, SpeedometerHelper.SPEED_UNITS_MPH);
-        leftViewContainer.addView(maxSpeedView);
+//        MaxSpeedView maxSpeedView = new MaxSpeedView(this);
+//        maxSpeedView.setMaxSpeed(134, SpeedometerHelper.SPEED_UNITS_MPH);
+//        leftViewContainer.addView(maxSpeedView);
 //
-//        OneLineScaleView scaleView1 = new OneLineScaleView(this);
-//        scaleView1.setSpeed(120, SpeedometerHelper.SPEED_UNITS_MPH);
-//        leftViewContainer.addView(scaleView1);
+        MiniSpeedometerView scaleView1 = new MiniSpeedometerView(this);
+        scaleView1.setSpeed(24, SpeedometerHelper.SPEED_UNITS_MPH);
+        leftViewContainer.addView(scaleView1);
 
         CurrentTimeView currentTimeView = new CurrentTimeView(this);
         rightViewContainer.addView(currentTimeView);
