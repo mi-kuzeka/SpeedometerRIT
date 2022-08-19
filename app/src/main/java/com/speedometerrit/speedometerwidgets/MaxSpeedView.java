@@ -9,7 +9,7 @@ import com.speedometerrit.helpers.SpeedometerHelper;
 
 public class MaxSpeedView extends MiniWidget {
     private int maxSpeed = 0;
-    private int speedUnits = SpeedometerHelper.SPEED_UNITS_KMH;
+    private int speedUnits;
 
     public MaxSpeedView(@NonNull Context context) {
         super(context);
@@ -19,12 +19,7 @@ public class MaxSpeedView extends MiniWidget {
     private void init() {
         super.setTopImage(R.drawable.ic_widgets_name_max_long);
         super.setText(String.valueOf(maxSpeed));
-        setUnitsKMH();
-    }
-
-    public void setMaxSpeed(int speed, int speedUnits) {
-        setMaxSpeed(speed);
-        setSpeedUnits(speedUnits);
+        setSpeedUnits(SpeedometerHelper.getSpeedUnits());
     }
 
     public void setMaxSpeed(int speed) {

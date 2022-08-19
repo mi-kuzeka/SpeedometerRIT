@@ -29,8 +29,8 @@ public class DotsSpeedometerView extends SpeedometerView {
     }
 
     @Override
-    public void setSpeed(int speed, byte speedUnits) {
-        super.setSpeed(speed, speedUnits);
-        scaleView.setSpeed(speed, speedUnits);
+    public void setSpeed(int speed) {
+        super.setSpeed(speed);
+        scaleView.setSpeed(speed);
     }
 }

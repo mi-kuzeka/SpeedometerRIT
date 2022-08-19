@@ -5,9 +5,33 @@
     android:id="@+id/main_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/padding_bottom"
     android:background="@color/black"
+    android:paddingBottom="@dimen/padding_bottom"
     tools:context=".MainActivity">
+
+    <RadioGroup
+        android:id="@+id/speed_units_group"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/speed_units_padding"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <RadioButton
+            android:id="@+id/kmh_button"
+            style="@style/SpeedUnitsStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/speed_units_kmh" />
+
+        <RadioButton
+            android:id="@+id/mph_button"
+            style="@style/SpeedUnitsStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/speed_units_mph" />
+    </RadioGroup>
 
     <FrameLayout
         android:id="@+id/left_view"

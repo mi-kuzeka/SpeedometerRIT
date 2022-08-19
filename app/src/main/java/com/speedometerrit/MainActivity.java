@@ -3,10 +3,13 @@ package com.speedometerrit;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.transition.AutoTransition;
 import android.transition.TransitionManager;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.widget.FrameLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 
 import com.speedometerrit.customview.SpeedometerView;
 import com.speedometerrit.helpers.RandomWidgetsGenerator;
@@ -20,10 +23,17 @@ import com.speedometerrit.speedometerwidgets.OneLineSpeedometerView;
 
 
 public class MainActivity extends AppCompatActivity {
+    // Gesture detector for tracking touches
     GestureDetector gestureDetector;
-    private boolean widgetsAreLoaded = false;
+    // Ensures that all widgets have been loaded
+    private boolean widgetsLoaded = false;
+    // Animation time
+    private int shortAnimationDuration;
 
+    // Container for animation
     private ConstraintLayout transitionsContainer;
+
+    // Widget containers
     private FrameLayout speedometerViewContainer;
     private FrameLayout leftViewContainer;
     private FrameLayout rightViewContainer;
@@ -37,15 +47,45 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void init() {
+        // Set container for animation
         transitionsContainer = findViewById(R.id.main_layout);
+        // Retrieve and cache the system's default "short" animation time.
+        shortAnimationDuration = getResources().getInteger(
+                android.R.integer.config_shortAnimTime);
 
+        // View containers
         speedometerViewContainer = findViewById(R.id.speedometer_view);
         leftViewContainer = findViewById(R.id.left_view);
         rightViewContainer = findViewById(R.id.right_view);
 
+        // Init speed units radioGroup
+        RadioGroup speedUnitsGroup = findViewById(R.id.speed_units_group);
+        speedUnitsGroup.setOnCheckedChangeListener((radioGroup, checkedId) -> {
+            if (checkedId == R.id.kmh_button) {
+                setSpeedUnits(SpeedometerHelper.SPEED_UNITS_KMH);
+            } else if (checkedId == R.id.mph_button) {
+                setSpeedUnits(SpeedometerHelper.SPEED_UNITS_MPH);
+            }
+        });
+        RadioButton kmhButton = findViewById(R.id.kmh_button);
+        kmhButton.setChecked(true);
+
+        // Show random views
         setRandomViews();
 
+        // Create detector for tracking touches
         gestureDetector = new GestureDetector(this, new GestureListener());
+    }
+
+    /**
+     * Change speed units
+     *
+     * @param speedUnits is an integer value of units from {@link SpeedometerHelper}
+     */
+    private void setSpeedUnits(int speedUnits) {
+        SpeedometerHelper.setSpeedUnits(speedUnits);
+        initAnimation();
+        reloadViews();
     }
 
     @Override
@@ -54,17 +94,20 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setRandomViews() {
-        widgetsAreLoaded = false;
+        widgetsLoaded = false;
         setRandomMiniWidget(leftViewContainer);
         setRandomCentralWidget();
         setRandomMiniWidget(rightViewContainer);
-        widgetsAreLoaded = true;
+        widgetsLoaded = true;
     }
 
     private void setRandomCentralWidget() {
+        // Generate random widget name for central view
         String widgetName = RandomWidgetsGenerator.getCentralWidgetName();
+        // There's no need to replace view with the same one
         if (speedometerViewContainer.getTag() == widgetName) return;
 
+        // Replace widget with new one
         setCentralWidget(widgetName);
     }
 
@@ -87,7 +130,7 @@ public class MainActivity extends AppCompatActivity {
             speedometerView = new OneLineSpeedometerView(this);
         }
         //TODO set speed and units
-        speedometerView.setSpeed(24, SpeedometerHelper.SPEED_UNITS_MPH);
+        speedometerView.setSpeed(117);
         speedometerViewContainer.addView(speedometerView);
     }
 
@@ -99,13 +142,13 @@ public class MainActivity extends AppCompatActivity {
             case RandomWidgetsGenerator.MINI_SPEEDOMETER_VIEW:
                 MiniSpeedometerView speedometerView = new MiniSpeedometerView(this);
                 //TODO set speed and units
-                speedometerView.setSpeed(35, SpeedometerHelper.SPEED_UNITS_MPH);
+                speedometerView.setSpeed(35);
                 viewContainer.addView(speedometerView);
                 break;
             case RandomWidgetsGenerator.MAX_SPEED_VIEW:
                 MaxSpeedView maxSpeedView = new MaxSpeedView(this);
                 //TODO set speed and units
-                maxSpeedView.setMaxSpeed(135, SpeedometerHelper.SPEED_UNITS_MPH);
+                maxSpeedView.setMaxSpeed(135);
                 viewContainer.addView(maxSpeedView);
                 break;
             case RandomWidgetsGenerator.CURRENT_TIME_VIEW:
@@ -126,8 +169,8 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public boolean onSingleTapConfirmed(MotionEvent e) {
-            if (!widgetsAreLoaded) return true;
-            TransitionManager.beginDelayedTransition(transitionsContainer);
+            if (!widgetsLoaded) return true;
+            initAnimation();
             setRandomViews();
             return true;
         }
@@ -135,24 +178,42 @@ public class MainActivity extends AppCompatActivity {
         // Event when double tap occurs
         @Override
         public boolean onDoubleTap(MotionEvent e) {
-            if (!widgetsAreLoaded) return true;
+            if (!widgetsLoaded) return true;
 
+            // Change speedometer color
             ColorManager.setRandomMainColor();
-
-            // Reload views
-            String centralWidgetName = (String) speedometerViewContainer.getTag();
-            speedometerViewContainer.removeAllViews();
-            setCentralWidget(centralWidgetName);
-
-            String leftWidgetName = (String) leftViewContainer.getTag();
-            leftViewContainer.removeAllViews();
-            setMiniWidget(leftViewContainer, leftWidgetName);
-
-            String rightWidgetName = (String) rightViewContainer.getTag();
-            rightViewContainer.removeAllViews();
-            setMiniWidget(rightViewContainer, rightWidgetName);
+            reloadViews();
 
             return true;
+        }
+    }
+
+    /**
+     * Initialize crossfade animation
+     */
+    private void initAnimation() {
+        AutoTransition autoTransition = new AutoTransition();
+        autoTransition.setDuration(shortAnimationDuration);
+        TransitionManager.beginDelayedTransition(transitionsContainer, autoTransition);
+    }
+
+    private void reloadViews() {
+        Object centralWidgetName = speedometerViewContainer.getTag();
+        if (centralWidgetName != null) {
+            speedometerViewContainer.removeAllViews();
+            setCentralWidget((String) centralWidgetName);
+        }
+
+        Object leftWidgetName = leftViewContainer.getTag();
+        if (leftWidgetName != null) {
+            leftViewContainer.removeAllViews();
+            setMiniWidget(leftViewContainer, (String) leftWidgetName);
+        }
+
+        Object rightWidgetName = rightViewContainer.getTag();
+        if (rightWidgetName != null) {
+            rightViewContainer.removeAllViews();
+            setMiniWidget(rightViewContainer, (String) rightWidgetName);
         }
     }
 }

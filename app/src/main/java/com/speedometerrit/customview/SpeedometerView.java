@@ -22,7 +22,7 @@ public class SpeedometerView extends ConstraintLayout {
     ScaleView scaleView;
 
     int speed = 0;
-    int speedUnits = 0;
+    int speedUnits;
     int maxScaleValue;
     int textColor;
 
@@ -41,8 +41,6 @@ public class SpeedometerView extends ConstraintLayout {
                 ColorManager.getDefaultTextColor());
         speed = attributes.getInt(R.styleable.SpeedometerView_speed,
                 0);
-        speedUnits = (int) attributes.getInt(R.styleable.SpeedometerView_speedUnits,
-                SpeedometerHelper.SPEED_UNITS_KMH);
         maxScaleValue = attributes.getInt(R.styleable.SpeedometerView_maxScaleValue,
                 SpeedometerHelper.getDefaultMaxScaleValue(speedUnits));
 
@@ -58,6 +56,8 @@ public class SpeedometerView extends ConstraintLayout {
         layout = (ConstraintLayout)
                 li.inflate(R.layout.speedometer_view, this, true);
 
+        speedUnits = SpeedometerHelper.getSpeedUnits();
+
         speedTextView = layout.findViewById(R.id.speed_text_view);
         scaleContainer = layout.findViewById(R.id.scale_container);
 
@@ -65,18 +65,13 @@ public class SpeedometerView extends ConstraintLayout {
         speedTextView.setTextColor(textColor);
     }
 
-    public void setSpeed(int speed, byte speedUnits) {
+    public void setSpeed(int speed) {
         if (speed < 0) this.speed = 0;
         speedTextView.setText(String.valueOf(speed));
-        this.speedUnits = speedUnits;
     }
 
     protected int getSpeed() {
         return this.speed;
-    }
-
-    protected int getSpeedUnits() {
-        return this.speedUnits;
     }
 
     protected void addScaleView(ScaleView scaleView) {

@@ -20,7 +20,7 @@ public class MiniSpeedometerView extends ConstraintLayout {
     OneLineScaleView scaleView;
 
     int speed = 0;
-    int speedUnits = 0;
+    int speedUnits;
     int textColor;
 
     public MiniSpeedometerView(Context context) {
@@ -43,19 +43,15 @@ public class MiniSpeedometerView extends ConstraintLayout {
         speedTextView.setTextColor(textColor);
         speedTextView.setText(String.valueOf(speed));
 
+        setSpeedUnits(SpeedometerHelper.getSpeedUnits());
         scaleView = new OneLineScaleView(context);
         scaleContainer.addView(scaleView);
-    }
-
-    public void setSpeed(int speed, byte speedUnits) {
-        setSpeed(speed);
-        setSpeedUnits(speedUnits);
-        scaleView.setSpeed(speed, speedUnits);
     }
 
     public void setSpeed(int speed) {
         this.speed = Math.max(speed, 0);
         speedTextView.setText(String.valueOf(this.speed));
+        scaleView.setSpeed(speed);
     }
 
     public void setSpeedUnits(int speedUnits) {

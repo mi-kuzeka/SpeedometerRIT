@@ -8,4 +8,7 @@
     <!-- Description for images -->
     <string name="top_image_desc">Top image</string>
     <string name="bottom_image_desc">Bottom image</string>
+    <!-- Speed units -->
+    <string name="speed_units_kmh">KM/H</string>
+    <string name="speed_units_mph">MPH</string>
 </resources>

@@ -26,8 +26,8 @@ public class OneLineScaleView extends ScaleView {
     }
 
     @Override
-    public void setSpeed(int speed, int speedUnits) {
-        speedometerHelper.setSpeed(speed, speedUnits);
+    public void setSpeed(int speed) {
+        speedometerHelper.setSpeed(speed);
     }
 
     @Override

@@ -9,6 +9,6 @@ public abstract class ScaleView extends View {
         super(context);
     }
 
-    public abstract void setSpeed(int speed, int speedUnits);
+    public abstract void setSpeed(int speed);
     protected abstract void drawScale(Canvas canvas);
 }

@@ -9,4 +9,8 @@
     <dimen name="mini_view_text_size">24sp</dimen>
     <dimen name="mini_view_text_margin">15dp</dimen>
     <dimen name="mini_speedometer_padding">10dp</dimen>
+    <dimen name="speed_units_padding">20dp</dimen>
+    <dimen name="speed_units_button_height">40dp</dimen>
+    <dimen name="speed_units_button_width">50dp</dimen>
+    <dimen name="speed_units_text_size">14sp</dimen>
 </resources>
