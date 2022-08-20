@@ -1,5 +1,7 @@
 package com.speedometerrit.helpers;
 
+import java.util.Random;
+
 public class SpeedometerHelper {
     public static final int SPEED_UNITS_KMH = 0;
     public static final int SPEED_UNITS_MPH = 1;
@@ -234,6 +236,14 @@ public class SpeedometerHelper {
 
 
     /* STATIC METHODS */
+
+    /**
+     * Generate random speed
+     */
+    public static int getRandomSpeed() {
+        Random random = new Random();
+        return random.nextInt(maxScaleValue);
+    }
 
     /**
      * Get the maximum scale value in current speed units

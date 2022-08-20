@@ -2,7 +2,7 @@ package com.speedometerrit.helpers;
 
 import java.util.Random;
 
-public class RandomWidgetsGenerator {
+public class WidgetNamesGenerator {
     // Central (big) widget names
     public static final String ONE_LINE_SPEEDOMETER_VIEW = "OneLineSpeedometer";
     public static final String DOTS_SPEEDOMETER_VIEW = "DotsSpeedometer";
@@ -12,7 +12,7 @@ public class RandomWidgetsGenerator {
     public static final String MAX_SPEED_VIEW = "MaxSpeed";
     public static final String CURRENT_TIME_VIEW = "CurrentTime";
 
-    private RandomWidgetsGenerator() {
+    private WidgetNamesGenerator() {
     }
 
     /**
