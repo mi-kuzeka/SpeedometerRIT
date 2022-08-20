@@ -13,15 +13,15 @@ import com.speedometerrit.helpers.ColorManager;
 import com.speedometerrit.helpers.SpeedometerHelper;
 
 public class MiniSpeedometerView extends ConstraintLayout {
-    ConstraintLayout layout = null;
-    TextView speedTextView = null;
-    FrameLayout scaleContainer = null;
-    ImageView amPmImageView = null;
-    OneLineScaleView scaleView;
+    private ConstraintLayout layout = null;
+    private TextView speedTextView = null;
+    private FrameLayout scaleContainer = null;
+    private ImageView amPmImageView = null;
+    private OneLineScaleView scaleView;
 
-    int speed = 0;
-    int speedUnits;
-    int textColor;
+    private int speed = 0;
+    private int speedUnits;
+    private int textColor;
 
     public MiniSpeedometerView(Context context) {
         super(context);

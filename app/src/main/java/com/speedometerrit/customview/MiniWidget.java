@@ -11,12 +11,12 @@ import com.speedometerrit.R;
 import com.speedometerrit.helpers.ColorManager;
 
 public class MiniWidget extends ConstraintLayout {
-    ConstraintLayout layout = null;
-    TextView textView = null;
-    ImageView topImageView = null;
-    ImageView bottomImageView = null;
-    int textColor;
-    String text = "";
+    private ConstraintLayout layout = null;
+    private TextView textView = null;
+    private ImageView topImageView = null;
+    private ImageView bottomImageView = null;
+    private int textColor;
+    private String text = "";
 
     public MiniWidget(@NonNull Context context) {
         super(context);

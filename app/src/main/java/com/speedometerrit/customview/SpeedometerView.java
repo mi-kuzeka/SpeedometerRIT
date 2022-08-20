@@ -16,15 +16,15 @@ import com.speedometerrit.helpers.ColorManager;
 import com.speedometerrit.helpers.SpeedometerHelper;
 
 public class SpeedometerView extends ConstraintLayout {
-    ConstraintLayout layout = null;
-    TextView speedTextView = null;
-    FrameLayout scaleContainer = null;
-    ScaleView scaleView;
+    private ConstraintLayout layout = null;
+    private TextView speedTextView = null;
+    private FrameLayout scaleContainer = null;
+    private ScaleView scaleView;
 
-    int speed = 0;
-    int speedUnits;
-    int maxScaleValue;
-    int textColor;
+    private int speed = 0;
+    private int speedUnits;
+    private int maxScaleValue;
+    private int textColor;
 
     public SpeedometerView(@NonNull Context context) {
         super(context);

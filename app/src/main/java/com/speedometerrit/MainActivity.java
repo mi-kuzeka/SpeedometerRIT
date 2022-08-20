@@ -24,7 +24,7 @@ import com.speedometerrit.speedometerwidgets.OneLineSpeedometerView;
 
 public class MainActivity extends AppCompatActivity {
     // Gesture detector for tracking touches
-    GestureDetector gestureDetector;
+    private GestureDetector gestureDetector;
     // Ensures that all widgets have been loaded
     private boolean widgetsLoaded = false;
     // Animation time
