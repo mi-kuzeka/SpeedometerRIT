@@ -1,5 +1,7 @@
 package com.speedometerrit.helpers;
 
+import com.speedometerrit.R;
+
 import java.util.Random;
 
 public class SpeedometerHelper {
@@ -199,7 +201,6 @@ public class SpeedometerHelper {
         } else
             speed = Math.min(newSpeed, maxScaleValue);
 
-        maxSpeed = Math.max(maxSpeed, speed);
         speedAngle = ((float) SCALE_SWEEP_ANGLE * (float) speed)
                 / (float) maxScaleValue;
     }
@@ -233,11 +234,29 @@ public class SpeedometerHelper {
     }
 
     /**
+     * Get angle for current speed
+     */
+    public float getSpeedAngle(int currentSpeed) {
+        return ((float) SCALE_SWEEP_ANGLE * (float) currentSpeed)
+                / (float) maxScaleValue;
+    }
+
+    /**
      * Generate random speed
      */
     public static int getRandomSpeed() {
         Random random = new Random();
         return random.nextInt(maxScaleValue);
+    }
+
+    /**
+     * Generate random maximum speed
+     */
+    public static int getRandomMaxSpeed() {
+        Random random = new Random();
+        int bound = maxScaleValue / 10 - 1;
+        // Get only multiples of ten speed values (can't be zero)
+        return random.nextInt(bound) * 10 + 10;
     }
 
     /**
@@ -291,14 +310,30 @@ public class SpeedometerHelper {
     public static void changeSpeedUnits(int newSpeedUnits) {
         if (speedUnits != newSpeedUnits) {
             if (newSpeedUnits == SpeedometerHelper.SPEED_UNITS_KMH) {
-                maxSpeed = SpeedometerHelper.convertSpeedToKmh(maxSpeed);
                 speed = SpeedometerHelper.convertSpeedToKmh(speed);
+                maxSpeed = SpeedometerHelper.convertSpeedToKmh(maxSpeed);
             } else {
-                maxSpeed = SpeedometerHelper.convertSpeedToMph(maxSpeed);
                 speed = SpeedometerHelper.convertSpeedToMph(speed);
+                maxSpeed = SpeedometerHelper.convertSpeedToMph(maxSpeed);
             }
+            // Round max speed
+            maxSpeed = roundToTen(maxSpeed);
             setSpeedUnits(newSpeedUnits);
         }
+    }
+
+    /**
+     * Round speed to integer which ends with 0
+     */
+    private static int roundToTen(int speed) {
+        // Smaller multiple
+        int smaller = (speed / 10) * 10;
+        // Larger multiple
+        int larger = smaller + 10;
+
+        if (smaller == 0) return larger;
+        // Return closest of two
+        return (speed - smaller > larger - speed) ? larger : smaller;
     }
 
     /**

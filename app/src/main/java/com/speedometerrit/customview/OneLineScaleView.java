@@ -10,7 +10,7 @@ import com.speedometerrit.helpers.ColorManager;
 import com.speedometerrit.helpers.SpeedometerHelper;
 
 public class OneLineScaleView extends View {
-    private SpeedometerHelper speedometerHelper;
+    private final SpeedometerHelper speedometerHelper;
 
     // Paint object for coloring and styling
     private final Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);

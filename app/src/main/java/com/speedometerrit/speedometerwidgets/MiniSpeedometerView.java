@@ -15,16 +15,11 @@ import com.speedometerrit.helpers.ColorManager;
 import com.speedometerrit.helpers.SpeedometerHelper;
 
 public class MiniSpeedometerView extends ConstraintLayout {
-    private ConstraintLayout layout = null;
     private TextView speedTextView = null;
-    private FrameLayout scaleContainer = null;
     private ImageView amPmImageView = null;
-    private OneLineScaleView scaleView;
     private SpeedView speedView;
 
     private int speed = 0;
-    private int speedUnits;
-    private int textColor;
 
     public MiniSpeedometerView(Context context) {
         super(context);
@@ -35,19 +30,20 @@ public class MiniSpeedometerView extends ConstraintLayout {
         String service = Context.LAYOUT_INFLATER_SERVICE;
         LayoutInflater li = (LayoutInflater) getContext().getSystemService(service);
 
-        layout = (ConstraintLayout)
+        ConstraintLayout layout = (ConstraintLayout)
                 li.inflate(R.layout.mini_speedometer, this, true);
 
-        scaleContainer = layout.findViewById(R.id.mini_scale_container);
+        FrameLayout scaleContainer = layout.findViewById(R.id.mini_scale_container);
         speedTextView = layout.findViewById(R.id.mini_speed_text_view);
         amPmImageView = layout.findViewById(R.id.am_pm_image_view);
 
-        textColor = getResources().getColor(ColorManager.getDefaultTextColor());
+        int textColor = getResources().getColor(ColorManager.getDefaultTextColor());
         speedTextView.setTextColor(textColor);
         speedTextView.setText(String.valueOf(speed));
 
         setSpeedUnits(SpeedometerHelper.getSpeedUnits());
-        scaleView = new OneLineScaleView(context, true);
+
+        OneLineScaleView scaleView = new OneLineScaleView(context, true);
         scaleContainer.addView(scaleView);
         speedView = new SpeedProgressView(context, true);
         scaleContainer.addView(speedView);
@@ -60,8 +56,7 @@ public class MiniSpeedometerView extends ConstraintLayout {
     }
 
     public void setSpeedUnits(int speedUnits) {
-        this.speedUnits = speedUnits;
-        if (this.speedUnits == SpeedometerHelper.SPEED_UNITS_KMH) {
+        if (speedUnits == SpeedometerHelper.SPEED_UNITS_KMH) {
             setUnitsKMH();
         } else {
             setUnitsMPH();

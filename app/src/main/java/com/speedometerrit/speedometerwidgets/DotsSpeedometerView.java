@@ -13,7 +13,6 @@ import com.speedometerrit.customview.SpeedView;
 import com.speedometerrit.customview.SpeedometerView;
 
 public class DotsSpeedometerView extends SpeedometerView {
-    private DotsScaleView scaleView;
     private NeedleView needleView;
 
     public DotsSpeedometerView(@NonNull Context context) {
@@ -27,7 +26,7 @@ public class DotsSpeedometerView extends SpeedometerView {
     }
 
     private void init(Context context) {
-        scaleView = new DotsScaleView(context);
+        DotsScaleView scaleView = new DotsScaleView(context);
         super.addScaleView(scaleView);
         needleView = new NeedleView(context);
         super.addSpeedProgressView(needleView);

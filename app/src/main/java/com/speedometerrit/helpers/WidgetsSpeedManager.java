@@ -23,13 +23,12 @@ public class WidgetsSpeedManager {
         this.rightContainer = rightContainer;
     }
 
-    public void setSpeed(int newSpeed) {
-        if (newSpeed > SpeedometerHelper.getMaxSpeed()) {
-            SpeedometerHelper.setMaxSpeed(newSpeed);
-            setMaxSpeedToView(leftContainer);
-            setMaxSpeedToView(rightContainer);
-        }
+    public void setMaxSpeed(int newMaxSpeed) {
+        SpeedometerHelper.setMaxSpeed(newMaxSpeed);
+        updateMaxSpeed();
+    }
 
+    public void setSpeed(int newSpeed) {
         SpeedometerHelper.setSpeed(newSpeed);
 
         setSpeedToMiniSpeedometer(leftContainer);

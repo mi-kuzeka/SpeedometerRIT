@@ -68,6 +68,7 @@ public class MainActivity extends AppCompatActivity {
             handler.postDelayed(runnable, delay);
             if (widgetsLoaded) {
                 widgetsSpeedManager.setSpeed(SpeedometerHelper.getRandomSpeed());
+                widgetsSpeedManager.setMaxSpeed(SpeedometerHelper.getRandomMaxSpeed());
             }
         }, delay);
         super.onResume();
@@ -107,6 +108,7 @@ public class MainActivity extends AppCompatActivity {
         // Create detector for tracking touches
         gestureDetector = new GestureDetector(this, new GestureListener());
         widgetsSpeedManager.setSpeed(SpeedometerHelper.getRandomSpeed());
+        widgetsSpeedManager.setMaxSpeed(SpeedometerHelper.getRandomMaxSpeed());
     }
 
     /**

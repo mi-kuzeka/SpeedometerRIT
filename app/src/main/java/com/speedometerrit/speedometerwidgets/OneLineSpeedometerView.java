@@ -11,7 +11,6 @@ import com.speedometerrit.customview.SpeedProgressView;
 import com.speedometerrit.customview.SpeedometerView;
 
 public class OneLineSpeedometerView extends SpeedometerView {
-    private OneLineScaleView scaleView;
     private SpeedProgressView speedProgressView;
 
     public OneLineSpeedometerView(@NonNull Context context) {
@@ -25,7 +24,7 @@ public class OneLineSpeedometerView extends SpeedometerView {
     }
 
     private void init(Context context) {
-        scaleView = new OneLineScaleView(context, false);
+        OneLineScaleView scaleView = new OneLineScaleView(context, false);
         super.addScaleView(scaleView);
         speedProgressView = new SpeedProgressView(context);
         super.addSpeedProgressView(speedProgressView);

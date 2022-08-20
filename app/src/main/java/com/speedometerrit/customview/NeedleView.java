@@ -29,7 +29,6 @@ public class NeedleView extends SpeedView {
 
     @Override
     public void setSpeed(int speed) {
-        speedometerHelper.setSpeed(speed);
         invalidate();
     }
 
@@ -110,7 +109,7 @@ public class NeedleView extends SpeedView {
         Matrix matrix = new Matrix();
         RectF bounds = new RectF();
         needle.computeBounds(bounds, true);
-        matrix.postRotate(speedometerHelper.getNeedleAngle(), center, center);
+        matrix.postRotate(SpeedometerHelper.getNeedleAngle(), center, center);
         needle.transform(matrix);
 
         canvas.drawPath(needle, paint);

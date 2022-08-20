@@ -135,7 +135,7 @@ public class DotsScaleView extends View {
                           float circleRadius,
                           float dotOffset) {
         int pointColorId;
-        if (speedometerHelper.pointReached(dotNumber)) {
+        if (SpeedometerHelper.pointReached(dotNumber)) {
             pointColorId = ColorManager.getReachedPointColor();
         } else {
             pointColorId = ColorManager.getPointColor();
