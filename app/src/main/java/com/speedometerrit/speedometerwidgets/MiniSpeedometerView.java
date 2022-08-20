@@ -44,7 +44,7 @@ public class MiniSpeedometerView extends ConstraintLayout {
         speedTextView.setText(String.valueOf(speed));
 
         setSpeedUnits(SpeedometerHelper.getSpeedUnits());
-        scaleView = new OneLineScaleView(context);
+        scaleView = new OneLineScaleView(context, true);
         scaleContainer.addView(scaleView);
     }
 

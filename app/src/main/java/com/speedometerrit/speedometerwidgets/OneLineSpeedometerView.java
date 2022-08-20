@@ -23,7 +23,7 @@ public class OneLineSpeedometerView extends SpeedometerView {
     }
 
     private void init(Context context) {
-        scaleView = new OneLineScaleView(context);
+        scaleView = new OneLineScaleView(context, false);
         super.addScaleView(scaleView);
         super.setTextSize(getResources().getDimension(R.dimen.speedometer_text_size));
     }

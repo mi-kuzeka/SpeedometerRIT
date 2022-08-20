@@ -43,7 +43,7 @@ public class DotsScaleView extends ScaleView {
         scaleSize = Math.min(getMeasuredWidth(), getMeasuredHeight());
         setMeasuredDimension((int) scaleSize, (int) scaleSize);
 
-        speedometerHelper.setScaleSize(scaleSize);
+        speedometerHelper.setScaleSize(scaleSize, false);
         innerCircleSize = speedometerHelper.getInnerCircleSize();
     }
 

@@ -15,13 +15,15 @@ public class OneLineScaleView extends ScaleView {
     private final Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private int scaleSize = 0; // Scale size
     private float scalePadding = 0; // Padding of scale
-    int scaleColor; // Scale color
+    private int scaleColor; // Scale color
     // Current speed sector color
-    int speedColor;
+    private int speedColor;
+    private boolean isSmallWidget = false;
 
-    public OneLineScaleView(Context context) {
+    public OneLineScaleView(Context context, boolean isSmallWidget) {
         super(context);
         setDefaultColors();
+        this.isSmallWidget = isSmallWidget;
         speedometerHelper = new SpeedometerHelper();
     }
 
@@ -37,7 +39,7 @@ public class OneLineScaleView extends ScaleView {
         scaleSize = Math.min(getMeasuredWidth(), getMeasuredHeight());
         setMeasuredDimension(scaleSize, scaleSize);
 
-        speedometerHelper.setScaleSize(scaleSize);
+        speedometerHelper.setScaleSize(scaleSize, isSmallWidget);
         scalePadding = speedometerHelper.getScalePadding();
     }
 

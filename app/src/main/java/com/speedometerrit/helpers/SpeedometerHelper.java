@@ -82,9 +82,9 @@ public class SpeedometerHelper {
     /**
      * Set size of the speedometer view
      */
-    public void setScaleSize(float scaleSize) {
+    public void setScaleSize(float scaleSize, boolean isSmallWidget) {
         this.scaleSize = scaleSize;
-        setScaleThickness(scaleSize);
+        setScaleThickness(scaleSize, isSmallWidget);
         setDotsMargin();
         setNeedleWidth();
     }
@@ -101,8 +101,12 @@ public class SpeedometerHelper {
      *
      * @param scaleSize is size of the speedometer view
      */
-    public void setScaleThickness(float scaleSize) {
-        this.scaleThickness = scaleSize / 65f;
+    public void setScaleThickness(float scaleSize, boolean isSmallWidget) {
+        if (isSmallWidget) {
+            this.scaleThickness = scaleSize / 35f;
+        } else {
+            this.scaleThickness = scaleSize / 65f;
+        }
     }
 
     /**
