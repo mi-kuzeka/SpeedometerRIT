@@ -9,6 +9,8 @@ import android.widget.TextView;
 
 import com.speedometerrit.R;
 import com.speedometerrit.customview.OneLineScaleView;
+import com.speedometerrit.customview.SpeedProgressView;
+import com.speedometerrit.customview.SpeedView;
 import com.speedometerrit.helpers.ColorManager;
 import com.speedometerrit.helpers.SpeedometerHelper;
 
@@ -18,6 +20,7 @@ public class MiniSpeedometerView extends ConstraintLayout {
     private FrameLayout scaleContainer = null;
     private ImageView amPmImageView = null;
     private OneLineScaleView scaleView;
+    private SpeedView speedView;
 
     private int speed = 0;
     private int speedUnits;
@@ -46,12 +49,14 @@ public class MiniSpeedometerView extends ConstraintLayout {
         setSpeedUnits(SpeedometerHelper.getSpeedUnits());
         scaleView = new OneLineScaleView(context, true);
         scaleContainer.addView(scaleView);
+        speedView = new SpeedProgressView(context, true);
+        scaleContainer.addView(speedView);
     }
 
     public void setSpeed(int speed) {
         this.speed = Math.max(speed, 0);
         speedTextView.setText(String.valueOf(this.speed));
-        scaleView.setSpeed(speed);
+        speedView.setSpeed(speed);
     }
 
     public void setSpeedUnits(int speedUnits) {

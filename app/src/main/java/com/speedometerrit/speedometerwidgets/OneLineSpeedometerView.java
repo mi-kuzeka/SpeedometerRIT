@@ -7,10 +7,12 @@ import android.util.AttributeSet;
 
 import com.speedometerrit.R;
 import com.speedometerrit.customview.OneLineScaleView;
+import com.speedometerrit.customview.SpeedProgressView;
 import com.speedometerrit.customview.SpeedometerView;
 
 public class OneLineSpeedometerView extends SpeedometerView {
     private OneLineScaleView scaleView;
+    private SpeedProgressView speedProgressView;
 
     public OneLineSpeedometerView(@NonNull Context context) {
         super(context);
@@ -25,12 +27,14 @@ public class OneLineSpeedometerView extends SpeedometerView {
     private void init(Context context) {
         scaleView = new OneLineScaleView(context, false);
         super.addScaleView(scaleView);
+        speedProgressView = new SpeedProgressView(context);
+        super.addSpeedProgressView(speedProgressView);
         super.setTextSize(getResources().getDimension(R.dimen.speedometer_text_size));
     }
 
     @Override
     public void setSpeed(int speed) {
         super.setSpeed(speed);
-        scaleView.setSpeed(speed);
+        speedProgressView.setSpeed(speed);
     }
 }

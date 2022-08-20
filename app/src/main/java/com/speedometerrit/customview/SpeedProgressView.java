@@ -9,24 +9,31 @@ import android.view.View;
 import com.speedometerrit.helpers.ColorManager;
 import com.speedometerrit.helpers.SpeedometerHelper;
 
-public class OneLineScaleView extends View {
-    private SpeedometerHelper speedometerHelper;
+public class SpeedProgressView extends SpeedView {
+    private final SpeedometerHelper speedometerHelper;
 
     // Paint object for coloring and styling
     private final Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private int scaleSize = 0; // Scale size
     private float scalePadding = 0; // Padding of scale
-    private int scaleColor; // Scale color
+    // Current speed sector color
+    private int speedColor;
     private boolean isSmallWidget = false;
 
-    public OneLineScaleView(Context context) {
+    public SpeedProgressView(Context context) {
         super(context);
         setDefaultColor();
         this.isSmallWidget = false;
         speedometerHelper = new SpeedometerHelper();
     }
 
-    public OneLineScaleView(Context context, boolean isSmallWidget) {
+    @Override
+    public void setSpeed(int speed) {
+        speedometerHelper.setSpeed(speed);
+        invalidate();
+    }
+
+    public SpeedProgressView(Context context, boolean isSmallWidget) {
         super(context);
         setDefaultColor();
         this.isSmallWidget = isSmallWidget;
@@ -45,7 +52,7 @@ public class OneLineScaleView extends View {
     }
 
     private void setDefaultColor() {
-        this.scaleColor = getColor(ColorManager.getDefaultOneLineScaleColor());
+        this.speedColor = getColor(ColorManager.getMainColorId());
     }
 
     private int getColor(int colorId) {
@@ -56,18 +63,19 @@ public class OneLineScaleView extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        drawScale(canvas);
+        drawSpeedProgress(canvas);
     }
 
-    protected void drawScale(Canvas canvas) {
-        paint.setColor(scaleColor);
+    protected void drawSpeedProgress(Canvas canvas) {
+        paint.setColor(speedColor);
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeWidth(speedometerHelper.getScaleThickness());
 
-        // Draw scale
+        // Draw speed progress
         RectF oval = new RectF(scalePadding, scalePadding,
                 scaleSize - scalePadding, scaleSize - scalePadding);
+
         canvas.drawArc(oval, SpeedometerHelper.SCALE_BEGIN_ANGLE,
-                SpeedometerHelper.SCALE_SWEEP_ANGLE, false, paint);
+                speedometerHelper.getSpeedAngle(), false, paint);
     }
 }

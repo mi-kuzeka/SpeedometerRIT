@@ -7,10 +7,14 @@ import android.util.AttributeSet;
 
 import com.speedometerrit.R;
 import com.speedometerrit.customview.DotsScaleView;
+import com.speedometerrit.customview.NeedleView;
+import com.speedometerrit.customview.SpeedProgressView;
+import com.speedometerrit.customview.SpeedView;
 import com.speedometerrit.customview.SpeedometerView;
 
 public class DotsSpeedometerView extends SpeedometerView {
     private DotsScaleView scaleView;
+    private NeedleView needleView;
 
     public DotsSpeedometerView(@NonNull Context context) {
         super(context);
@@ -25,12 +29,14 @@ public class DotsSpeedometerView extends SpeedometerView {
     private void init(Context context) {
         scaleView = new DotsScaleView(context);
         super.addScaleView(scaleView);
+        needleView = new NeedleView(context);
+        super.addSpeedProgressView(needleView);
         super.setTextSize(getResources().getDimension(R.dimen.speedometer_text_size));
     }
 
     @Override
     public void setSpeed(int speed) {
         super.setSpeed(speed);
-        scaleView.setSpeed(speed);
+        needleView.setSpeed(speed);
     }
 }

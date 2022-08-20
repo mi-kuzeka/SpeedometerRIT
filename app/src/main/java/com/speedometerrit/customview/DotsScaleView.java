@@ -3,16 +3,15 @@ package com.speedometerrit.customview;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.LinearGradient;
-import android.graphics.Matrix;
 import android.graphics.Paint;
-import android.graphics.Path;
 import android.graphics.RectF;
 import android.graphics.Shader;
+import android.view.View;
 
 import com.speedometerrit.helpers.ColorManager;
 import com.speedometerrit.helpers.SpeedometerHelper;
 
-public class DotsScaleView extends ScaleView {
+public class DotsScaleView extends View {
     private final SpeedometerHelper speedometerHelper;
     // Paint object for coloring and styling
     private final Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -22,18 +21,11 @@ public class DotsScaleView extends ScaleView {
 
     private int innerCircleColor; // Inner circle color
     private int scaleColor; // Scale color
-    private int needleColor; // Needle color
-    private int centerCircleColor; // Center circle color
 
     public DotsScaleView(Context context) {
         super(context);
         setDefaultColors();
         speedometerHelper = new SpeedometerHelper();
-    }
-
-    @Override
-    public void setSpeed(int speed) {
-        speedometerHelper.setSpeed(speed);
     }
 
     @Override
@@ -50,16 +42,10 @@ public class DotsScaleView extends ScaleView {
     private void setDefaultColors() {
         this.innerCircleColor = getColor(ColorManager.getInnerCircleColor());
         this.scaleColor = getColor(ColorManager.getMainColorId());
-        this.needleColor = getColor(ColorManager.getNeedleColor());
-        this.centerCircleColor = getColor(ColorManager.getCenterCircleColor());
     }
 
     private int getColor(int colorId) {
         return getResources().getColor(colorId);
-    }
-
-    public void setInnerCircleColor(int colorId) {
-        this.innerCircleColor = getColor(colorId);
     }
 
     @Override
@@ -96,16 +82,6 @@ public class DotsScaleView extends ScaleView {
 
             drawDots(canvas, dotNumber, circleRadius, dotOffset);
         }
-
-        float center = scaleSize / 2;
-
-        // Draw the needle
-        drawNeedle(canvas, center);
-
-        // Draw center circle
-        float centerCircleRadius =
-                speedometerHelper.getCenterCircleRadius(center, innerCircleMargin);
-        drawCenterCircle(canvas, center, centerCircleRadius);
     }
 
     private void drawOuterCircle(Canvas canvas) {
@@ -170,54 +146,5 @@ public class DotsScaleView extends ScaleView {
         float x = SpeedometerHelper.getDotX(angle, circleRadius, dotOffset);
         float y = SpeedometerHelper.getDotY(angle, circleRadius, dotOffset);
         canvas.drawCircle(x, y, speedometerHelper.getDotRadius(), paint);
-    }
-
-    private void drawNeedle(Canvas canvas, float center) {
-        paint.setColor(needleColor);
-        paint.setStyle(Paint.Style.FILL);
-
-        float needleOffset = speedometerHelper.getNeedleOffset();
-        float needleLength = speedometerHelper.getNeedleLength(needleOffset);
-        float needleBeginWidth = speedometerHelper.getNeedleBeginWidth();
-        float needleEndWidth = speedometerHelper.getNeedleEndWidth();
-
-        float topLeftX = needleOffset;
-        float topLeftY = center - needleEndWidth / 2;
-
-        float topRightX = needleLength + topLeftX;
-        float topRightY = center - needleBeginWidth / 2;
-
-        float bottomRightX = topRightX;
-        float bottomRightY = center + needleBeginWidth / 2;
-
-        float bottomLeftX = topLeftX;
-        float bottomLeftY = center + needleEndWidth / 2;
-
-        Path needle = new Path();
-        needle.setFillType(Path.FillType.EVEN_ODD);
-
-        needle.moveTo(topLeftX, topLeftY);
-        needle.lineTo(topRightX, topRightY);
-        needle.lineTo(bottomRightX, bottomRightY);
-        needle.lineTo(bottomLeftX, bottomLeftY);
-        needle.lineTo(topLeftX, topLeftY);
-        needle.close();
-
-        Matrix matrix = new Matrix();
-        RectF bounds = new RectF();
-        needle.computeBounds(bounds, true);
-        matrix.postRotate(speedometerHelper.getNeedleAngle(), center, center);
-        needle.transform(matrix);
-
-        canvas.drawPath(needle, paint);
-    }
-
-    private void drawCenterCircle(Canvas canvas,
-                                  float center,
-                                  float radius) {
-        paint.setColor(centerCircleColor);
-        paint.setStyle(Paint.Style.FILL);
-
-        canvas.drawCircle(center, center, radius, paint);
     }
 }

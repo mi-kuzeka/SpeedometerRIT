@@ -8,6 +8,7 @@ import android.support.constraint.ConstraintLayout;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
@@ -19,7 +20,7 @@ public class SpeedometerView extends ConstraintLayout {
     private ConstraintLayout layout = null;
     private TextView speedTextView = null;
     private FrameLayout scaleContainer = null;
-    private ScaleView scaleView;
+    private SpeedView speedView;
 
     private int speed = 0;
     private int speedUnits;
@@ -68,16 +69,21 @@ public class SpeedometerView extends ConstraintLayout {
     public void setSpeed(int speed) {
         if (speed < 0) this.speed = 0;
         speedTextView.setText(String.valueOf(speed));
+        if (this.speedView != null) this.speedView.setSpeed(speed);
     }
 
     protected int getSpeed() {
         return this.speed;
     }
 
-    protected void addScaleView(ScaleView scaleView) {
+    protected void addScaleView(View scaleView) {
         scaleContainer.removeAllViews();
-        this.scaleView = scaleView;
         scaleContainer.addView(scaleView);
+    }
+
+    protected void addSpeedProgressView(SpeedView speedProgressView) {
+        this.speedView = speedProgressView;
+        scaleContainer.addView(this.speedView);
     }
 
     protected void setTextSize(float textSize) {
