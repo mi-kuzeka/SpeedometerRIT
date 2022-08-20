@@ -19,7 +19,6 @@ public class DotsScaleView extends ScaleView {
 
     private float scaleSize = 0; // Scale size
     private float innerCircleSize = 0; // Inner circle size
-    private float scalePadding = 0; // Padding of scale
 
     private int innerCircleColor; // Inner circle color
     private int scaleColor; // Scale color
@@ -44,8 +43,8 @@ public class DotsScaleView extends ScaleView {
         scaleSize = Math.min(getMeasuredWidth(), getMeasuredHeight());
         setMeasuredDimension((int) scaleSize, (int) scaleSize);
 
-        innerCircleSize = SpeedometerHelper.getInnerCircleSize(scaleSize);
-        scalePadding = SpeedometerHelper.getScalePadding();
+        speedometerHelper.setScaleSize(scaleSize);
+        innerCircleSize = speedometerHelper.getInnerCircleSize();
     }
 
     private void setDefaultColors() {
@@ -75,18 +74,19 @@ public class DotsScaleView extends ScaleView {
         drawOuterCircle(canvas);
 
         // Draw inner circle
-        float innerCircleMargin = SpeedometerHelper
-                .getInnerCircleTopLeftMargin(scaleSize, innerCircleSize);
+        float innerCircleMargin = speedometerHelper
+                .getInnerCircleTopLeftMargin(innerCircleSize);
         float innerCircleRightBottomCoordinate = SpeedometerHelper
                 .getInnerCircleRightBottomCoordinate(innerCircleSize, innerCircleMargin);
 
         drawInnerCircle(canvas, innerCircleMargin, innerCircleRightBottomCoordinate);
 
+        // Clear gradient
         paint.setShader(null);
 
         // Draw dots
-        float circleRadius = SpeedometerHelper.getDotCircleRadius(scaleSize);
-        float dotOffset = SpeedometerHelper.getDotOffset(circleRadius);
+        float circleRadius = speedometerHelper.getDotCircleRadius();
+        float dotOffset = speedometerHelper.getDotOffset(circleRadius);
         paint.setStyle(Paint.Style.FILL);
         paint.setStrokeWidth(0);
 
@@ -104,16 +104,17 @@ public class DotsScaleView extends ScaleView {
 
         // Draw center circle
         float centerCircleRadius =
-                SpeedometerHelper.getCenterCircleRadius(center, innerCircleMargin);
+                speedometerHelper.getCenterCircleRadius(center, innerCircleMargin);
         drawCenterCircle(canvas, center, centerCircleRadius);
     }
 
     private void drawOuterCircle(Canvas canvas) {
+        float scalePadding = speedometerHelper.getScalePadding();
         // Set gradient
         paint.setShader(getScaleGradient(scaleSize - scalePadding, scaleColor));
 
         paint.setStyle(Paint.Style.STROKE);
-        paint.setStrokeWidth(SpeedometerHelper.SCALE_THICKNESS);
+        paint.setStrokeWidth(speedometerHelper.getScaleThickness());
 
         RectF oval = new RectF(scalePadding, scalePadding,
                 scaleSize - scalePadding, scaleSize - scalePadding);
@@ -168,27 +169,29 @@ public class DotsScaleView extends ScaleView {
         float angle = SpeedometerHelper.getDotAngle(dotNumber);
         float x = SpeedometerHelper.getDotX(angle, circleRadius, dotOffset);
         float y = SpeedometerHelper.getDotY(angle, circleRadius, dotOffset);
-        canvas.drawCircle(x, y, SpeedometerHelper.DOT_RADIUS, paint);
+        canvas.drawCircle(x, y, speedometerHelper.getDotRadius(), paint);
     }
 
     private void drawNeedle(Canvas canvas, float center) {
         paint.setColor(needleColor);
         paint.setStyle(Paint.Style.FILL);
 
-        float needleOffset = SpeedometerHelper.getNeedleOffset();
-        float needleLength = SpeedometerHelper.getNeedleLength(scaleSize, needleOffset);
+        float needleOffset = speedometerHelper.getNeedleOffset();
+        float needleLength = speedometerHelper.getNeedleLength(needleOffset);
+        float needleBeginWidth = speedometerHelper.getNeedleBeginWidth();
+        float needleEndWidth = speedometerHelper.getNeedleEndWidth();
 
         float topLeftX = needleOffset;
-        float topLeftY = center - SpeedometerHelper.NEEDLE_END_WIDTH / 2;
+        float topLeftY = center - needleEndWidth / 2;
 
         float topRightX = needleLength + topLeftX;
-        float topRightY = center - SpeedometerHelper.NEEDLE_BEGIN_WIDTH / 2;
+        float topRightY = center - needleBeginWidth / 2;
 
         float bottomRightX = topRightX;
-        float bottomRightY = center + SpeedometerHelper.NEEDLE_BEGIN_WIDTH / 2;
+        float bottomRightY = center + needleBeginWidth / 2;
 
         float bottomLeftX = topLeftX;
-        float bottomLeftY = center + SpeedometerHelper.NEEDLE_END_WIDTH / 2;
+        float bottomLeftY = center + needleEndWidth / 2;
 
         Path needle = new Path();
         needle.setFillType(Path.FillType.EVEN_ODD);

@@ -9,7 +9,7 @@ import com.speedometerrit.helpers.ColorManager;
 import com.speedometerrit.helpers.SpeedometerHelper;
 
 public class OneLineScaleView extends ScaleView {
-    private final SpeedometerHelper speedometerHelper;
+    private SpeedometerHelper speedometerHelper;
 
     // Paint object for coloring and styling
     private final Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -37,6 +37,7 @@ public class OneLineScaleView extends ScaleView {
         scaleSize = Math.min(getMeasuredWidth(), getMeasuredHeight());
         setMeasuredDimension(scaleSize, scaleSize);
 
+        speedometerHelper.setScaleSize(scaleSize);
         scalePadding = speedometerHelper.getScalePadding();
     }
 
@@ -59,7 +60,7 @@ public class OneLineScaleView extends ScaleView {
     protected void drawScale(Canvas canvas) {
         paint.setColor(scaleColor);
         paint.setStyle(Paint.Style.STROKE);
-        paint.setStrokeWidth(SpeedometerHelper.SCALE_THICKNESS);
+        paint.setStrokeWidth(speedometerHelper.getScaleThickness());
 
         // Draw scale
         RectF oval = new RectF(scalePadding, scalePadding,

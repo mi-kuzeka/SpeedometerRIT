@@ -19,19 +19,17 @@ public class SpeedometerHelper {
     // Maximum scale value for MPH
     public static final int DEFAULT_MAX_SCALE_VALUE_MPH = 160;
 
+    // Speedometer view size in pixels
+    private float scaleSize = 660f;
     // Scale border width in pixels
-    public static final float SCALE_THICKNESS = 10f;
-    // Speedometer padding
-    private static final float scalePadding = SCALE_THICKNESS / 2;
-    // Radius of dots
-    public static final float DOT_RADIUS = 5f;
+    private float scaleThickness = 10f;
     // Distance from scale to dots
-    public static final float DOTS_MARGIN = 30f;
+    private float dotsMargin = 30f;
 
     // Width of speedometer needle at the end
-    public static final float NEEDLE_END_WIDTH = 20f;
+    private float needleEndWidth = 20f;
     // Width of speedometer needle at the begin
-    public static final float NEEDLE_BEGIN_WIDTH = 40f;
+    private float needleBeginWidth = 40f;
 
     // Current speed units
     private static int speedUnits = SPEED_UNITS_KMH;
@@ -82,6 +80,77 @@ public class SpeedometerHelper {
     }
 
     /**
+     * Set size of the speedometer view
+     */
+    public void setScaleSize(float scaleSize) {
+        this.scaleSize = scaleSize;
+        setScaleThickness(scaleSize);
+        setDotsMargin();
+        setNeedleWidth();
+    }
+
+    /**
+     * Get size of the speedometer view
+     */
+    public float getScaleSize() {
+        return this.scaleSize;
+    }
+
+    /**
+     * Set scale border width in pixels
+     *
+     * @param scaleSize is size of the speedometer view
+     */
+    public void setScaleThickness(float scaleSize) {
+        this.scaleThickness = scaleSize / 65f;
+    }
+
+    /**
+     * Get scale border width in pixels
+     */
+    public float getScaleThickness() {
+        return this.scaleThickness;
+    }
+
+    /**
+     * Get padding of the scale in pixels
+     */
+    public float getScalePadding() {
+        return this.scaleThickness / 2;
+    }
+
+    /**
+     * Get radius of dot for DotsSpeedometer
+     */
+    public float getDotRadius() {
+        return this.scaleSize / 130f;
+    }
+
+    private void setDotsMargin() {
+        this.dotsMargin = this.scaleThickness * 3;
+    }
+
+    public float getDotsMargin() {
+        return this.dotsMargin;
+    }
+
+    /**
+     * Get radius of circle (in px) where the points will be located
+     */
+    public float getDotCircleRadius() {
+        return this.scaleSize / 2 - this.scaleThickness - dotsMargin;
+    }
+
+    /**
+     * Get offset of points relative to a circle
+     *
+     * @param circleRadius is radius of points circle
+     */
+    public float getDotOffset(float circleRadius) {
+        return circleRadius + getScalePadding() + dotsMargin + getDotRadius();
+    }
+
+    /**
      * Check if the speed has reached this point
      *
      * @param dotNumber is number of current point
@@ -97,6 +166,68 @@ public class SpeedometerHelper {
         return this.speedAngle - (180 - SCALE_BEGIN_ANGLE);
     }
 
+    private void setNeedleWidth() {
+        this.needleEndWidth = this.scaleSize / 32.5f;
+        this.needleBeginWidth = this.needleEndWidth * 2;
+    }
+
+    /**
+     * Get width of speedometer needle at the begin
+     */
+    public float getNeedleBeginWidth() {
+        return this.needleBeginWidth;
+    }
+
+    /**
+     * Get width of speedometer needle at the end
+     */
+    public float getNeedleEndWidth() {
+        return this.needleEndWidth;
+    }
+
+    /**
+     * Get offset of the speedometer needle relative to its left side
+     */
+    public float getNeedleOffset() {
+        return this.scaleThickness + (dotsMargin / 2);
+    }
+
+    /**
+     * Get length of the speedometer needle in pixels
+     *
+     * @param needleOffset is offset of the needle relative to its left side
+     */
+    public float getNeedleLength(float needleOffset) {
+        return (this.scaleSize / 2) - needleOffset;
+    }
+
+    /**
+     * Get size of inner circle for DotsSpeedometer
+     */
+    public float getInnerCircleSize() {
+        return this.scaleSize / INNER_CIRCLE_RATIO;
+    }
+
+    /**
+     * Get top and left margin of inner circle for DotsSpeedometer
+     *
+     * @param innerCircleSize is the size of inner circle
+     */
+    public float getInnerCircleTopLeftMargin(float innerCircleSize) {
+        return (this.scaleSize - innerCircleSize) / 2;
+    }
+
+    /**
+     * Get the radius of the black circle in the center of the speedometer
+     *
+     * @param center            is the center of speedometer
+     * @param innerCircleMargin is margin of gray inner circle
+     */
+    public float getCenterCircleRadius(float center, float innerCircleMargin) {
+        return center - innerCircleMargin - getScalePadding();
+    }
+
+
 
     /* STATIC METHODS */
 
@@ -106,13 +237,6 @@ public class SpeedometerHelper {
     public static int getDefaultMaxScaleValue(int speedUnits) {
         if (speedUnits == SPEED_UNITS_KMH) return DEFAULT_MAX_SCALE_VALUE_KMH;
         return DEFAULT_MAX_SCALE_VALUE_MPH;
-    }
-
-    /**
-     * Get padding of the scale in pixels
-     */
-    public static float getScalePadding() {
-        return scalePadding;
     }
 
     /**
@@ -157,24 +281,6 @@ public class SpeedometerHelper {
     }
 
     /**
-     * Get radius of circle (in px) where the points will be located
-     *
-     * @param scaleSize is size of speedometer view
-     */
-    public static float getDotCircleRadius(float scaleSize) {
-        return scaleSize / 2 - SCALE_THICKNESS - DOTS_MARGIN;
-    }
-
-    /**
-     * Get offset of points relative to a circle
-     *
-     * @param circleRadius is radius of points circle
-     */
-    public static float getDotOffset(float circleRadius) {
-        return circleRadius + scalePadding + DOTS_MARGIN + DOT_RADIUS;
-    }
-
-    /**
      * Get X coordinate for drawing dot
      */
     public static float getDotX(float angle, float circleRadius, float dotOffset) {
@@ -189,25 +295,6 @@ public class SpeedometerHelper {
     }
 
     /**
-     * Get size of inner circle for DotsSpeedometer
-     *
-     * @param scaleSize is speedometer size
-     */
-    public static float getInnerCircleSize(float scaleSize) {
-        return scaleSize / INNER_CIRCLE_RATIO;
-    }
-
-    /**
-     * Get top and left margin of inner circle for DotsSpeedometer
-     *
-     * @param scaleSize       is speedometer size
-     * @param innerCircleSize is the size of inner circle
-     */
-    public static float getInnerCircleTopLeftMargin(float scaleSize, float innerCircleSize) {
-        return (scaleSize - innerCircleSize) / 2;
-    }
-
-    /**
      * Get coordinate of right and bottom side of inner circle for DotsSpeedometer
      *
      * @param innerCircleSize    is the size of inner circle
@@ -217,32 +304,5 @@ public class SpeedometerHelper {
             float innerCircleSize, float innerCirclePadding) {
 
         return innerCircleSize + innerCirclePadding;
-    }
-
-    /**
-     * Get offset of the speedometer needle relative to its left side
-     */
-    public static float getNeedleOffset() {
-        return SCALE_THICKNESS + (DOTS_MARGIN / 2);
-    }
-
-    /**
-     * Get length of the speedometer needle in pixels
-     *
-     * @param viewSize     is the size of speedometer
-     * @param needleOffset is offset of the needle relative to its left side
-     */
-    public static float getNeedleLength(float viewSize, float needleOffset) {
-        return (viewSize / 2) - needleOffset;
-    }
-
-    /**
-     * Get the radius of the black circle in the center of the speedometer
-     *
-     * @param center            is the center of speedometer
-     * @param innerCircleMargin is margin of gray inner circle
-     */
-    public static float getCenterCircleRadius(float center, float innerCircleMargin) {
-        return center - innerCircleMargin - scalePadding;
     }
 }
