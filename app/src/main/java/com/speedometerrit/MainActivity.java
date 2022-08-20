@@ -6,18 +6,17 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.transition.AutoTransition;
 import android.transition.TransitionManager;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
-import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
 import com.speedometerrit.customview.SpeedometerView;
-import com.speedometerrit.helpers.WidgetNamesGenerator;
+import com.speedometerrit.helpers.WidgetNamesManager;
 import com.speedometerrit.helpers.ColorManager;
 import com.speedometerrit.helpers.SpeedometerHelper;
+import com.speedometerrit.helpers.WidgetsSpeedManager;
 import com.speedometerrit.speedometerwidgets.CurrentTimeView;
 import com.speedometerrit.speedometerwidgets.DotsSpeedometerView;
 import com.speedometerrit.speedometerwidgets.MaxSpeedView;
@@ -30,11 +29,10 @@ public class MainActivity extends AppCompatActivity {
     private Runnable runnable;
     private final int delay = 2000; // Update speed every 2 sec
 
-    private final String LOG_TAG = MainActivity.class.getSimpleName();
-
     // Gesture detector for tracking touches
     private GestureDetector gestureDetector;
 
+    private WidgetsSpeedManager widgetsSpeedManager;
     // Ensures that all widgets have been loaded
     private boolean widgetsLoaded = false;
     // Animation time
@@ -47,9 +45,6 @@ public class MainActivity extends AppCompatActivity {
     private FrameLayout speedometerViewContainer;
     private FrameLayout leftViewContainer;
     private FrameLayout rightViewContainer;
-
-    private int speed = 0;
-    private int maxSpeed = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,7 +66,9 @@ public class MainActivity extends AppCompatActivity {
         // Refresh speed
         handler.postDelayed(runnable = () -> {
             handler.postDelayed(runnable, delay);
-            if (widgetsLoaded) setSpeed(SpeedometerHelper.getRandomSpeed());
+            if (widgetsLoaded) {
+                widgetsSpeedManager.setSpeed(SpeedometerHelper.getRandomSpeed());
+            }
         }, delay);
         super.onResume();
     }
@@ -87,6 +84,10 @@ public class MainActivity extends AppCompatActivity {
         speedometerViewContainer = findViewById(R.id.speedometer_view);
         leftViewContainer = findViewById(R.id.left_view);
         rightViewContainer = findViewById(R.id.right_view);
+
+        widgetsSpeedManager = new WidgetsSpeedManager(leftViewContainer,
+                speedometerViewContainer,
+                rightViewContainer);
 
         // Init speed units radioGroup
         RadioGroup speedUnitsGroup = findViewById(R.id.speed_units_group);
@@ -105,7 +106,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Create detector for tracking touches
         gestureDetector = new GestureDetector(this, new GestureListener());
-        setSpeed(SpeedometerHelper.getRandomSpeed());
+        widgetsSpeedManager.setSpeed(SpeedometerHelper.getRandomSpeed());
     }
 
     /**
@@ -114,8 +115,8 @@ public class MainActivity extends AppCompatActivity {
      * @param speedUnits is an integer value of units from {@link SpeedometerHelper}
      */
     private void setSpeedUnits(int speedUnits) {
-        SpeedometerHelper.setSpeedUnits(speedUnits);
-        initAnimation();
+        SpeedometerHelper.changeSpeedUnits(speedUnits);
+        widgetsSpeedManager.updateMaxSpeed();
         reloadViews();
     }
 
@@ -134,7 +135,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void setRandomCentralWidget() {
         // Generate random widget name for central view
-        String widgetName = WidgetNamesGenerator.getCentralWidgetName();
+        String widgetName = WidgetNamesManager.getCentralWidgetName();
         // There's no need to replace view with the same one
         if (speedometerViewContainer.getTag() == widgetName) return;
 
@@ -143,7 +144,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setRandomMiniWidget(FrameLayout viewContainer) {
-        String widgetName = WidgetNamesGenerator.getMiniWidgetName();
+        String widgetName = WidgetNamesManager.getMiniWidgetName();
         if (viewContainer.getTag() == widgetName) return;
 
         setMiniWidget(viewContainer, widgetName);
@@ -155,12 +156,12 @@ public class MainActivity extends AppCompatActivity {
 
         SpeedometerView speedometerView;
 
-        if (WidgetNamesGenerator.DOTS_SPEEDOMETER_VIEW.equals(widgetName)) {
+        if (WidgetNamesManager.DOTS_SPEEDOMETER_VIEW.equals(widgetName)) {
             speedometerView = new DotsSpeedometerView(this);
         } else {
             speedometerView = new OneLineSpeedometerView(this);
         }
-        speedometerView.setSpeed(this.speed);
+        speedometerView.setSpeed(SpeedometerHelper.getSpeed());
         speedometerViewContainer.addView(speedometerView);
     }
 
@@ -169,18 +170,17 @@ public class MainActivity extends AppCompatActivity {
         viewContainer.removeAllViews();
 
         switch (widgetName) {
-            case WidgetNamesGenerator.MINI_SPEEDOMETER_VIEW:
+            case WidgetNamesManager.MINI_SPEEDOMETER_VIEW:
                 MiniSpeedometerView speedometerView = new MiniSpeedometerView(this);
-                speedometerView.setSpeed(this.speed);
+                speedometerView.setSpeed(SpeedometerHelper.getSpeed());
                 viewContainer.addView(speedometerView);
                 break;
-            case WidgetNamesGenerator.MAX_SPEED_VIEW:
+            case WidgetNamesManager.MAX_SPEED_VIEW:
                 MaxSpeedView maxSpeedView = new MaxSpeedView(this);
-                //TODO set speeds
-                maxSpeedView.setMaxSpeed(this.maxSpeed);
+                maxSpeedView.setMaxSpeed(SpeedometerHelper.getMaxSpeed());
                 viewContainer.addView(maxSpeedView);
                 break;
-            case WidgetNamesGenerator.CURRENT_TIME_VIEW:
+            case WidgetNamesManager.CURRENT_TIME_VIEW:
                 CurrentTimeView currentTimeView = new CurrentTimeView(this);
                 viewContainer.addView(currentTimeView);
                 break;
@@ -244,46 +244,5 @@ public class MainActivity extends AppCompatActivity {
             rightViewContainer.removeAllViews();
             setMiniWidget(rightViewContainer, (String) rightWidgetName);
         }
-    }
-
-    private void setSpeed(int speed) {
-        this.speed = speed;
-        this.maxSpeed = Math.max(speed, maxSpeed);
-
-        setSpeedToMiniSpeedometer(leftViewContainer);
-        setSpeedToBigSpeedometer();
-        setSpeedToMiniSpeedometer(rightViewContainer);
-    }
-
-    private void setSpeedToBigSpeedometer() {
-        if (speedometerViewContainer.getTag() != null) {
-            View view = speedometerViewContainer.getChildAt(0);
-            try {
-                SpeedometerView speedometerView = (SpeedometerView) view;
-                speedometerView.setSpeed(speed);
-            } catch (ClassCastException e) {
-                Log.e(LOG_TAG, "Can't cast View to SpeedometerView");
-            }
-        }
-    }
-
-    private void setSpeedToMiniSpeedometer(FrameLayout viewContainer) {
-        if (isMiniSpeedometer(viewContainer)) {
-            View view = viewContainer.getChildAt(0);
-            try {
-                MiniSpeedometerView speedometerView = (MiniSpeedometerView) view;
-                speedometerView.setSpeed(speed);
-            } catch (ClassCastException e) {
-                Log.e(LOG_TAG, "Can't cast View to MiniSpeedometerView");
-            }
-        }
-    }
-
-    private boolean isMiniSpeedometer(FrameLayout viewContainer) {
-        Object widgetName = viewContainer.getTag();
-        if (widgetName != null) {
-            return widgetName.equals(WidgetNamesGenerator.MINI_SPEEDOMETER_VIEW);
-        }
-        return false;
     }
 }

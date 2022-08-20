@@ -21,6 +21,20 @@ public class SpeedometerHelper {
     // Maximum scale value for MPH
     public static final int DEFAULT_MAX_SCALE_VALUE_MPH = 160;
 
+    // Current speed units
+    private static int speedUnits = SPEED_UNITS_KMH;
+    // Max value on the scale for current speed units
+    private static int maxScaleValue = DEFAULT_MAX_SCALE_VALUE_KMH;
+    // Count of scale sectors
+    private static int scaleSectorsCount = maxScaleValue / MAJOR_TICKS;
+
+    // Current speed
+    private static int speed;
+    // Maximum speed
+    private static int maxSpeed;
+    // Angle of speed point on the scale
+    private static float speedAngle;
+
     // Speedometer view size in pixels
     private float scaleSize = 660f;
     // Scale border width in pixels
@@ -33,52 +47,7 @@ public class SpeedometerHelper {
     // Width of speedometer needle at the begin
     private float needleBeginWidth = 40f;
 
-    // Current speed units
-    private static int speedUnits = SPEED_UNITS_KMH;
-    // Max value on the scale for current speed units
-    private static int maxScaleValue = DEFAULT_MAX_SCALE_VALUE_KMH;
-    // Count of scale sectors
-    private static int scaleSectorsCount = maxScaleValue / MAJOR_TICKS;
-
-    // Current speed
-    private int speed;
-    // Angle of speed point on the scale
-    private float speedAngle;
-
-
-    public SpeedometerHelper(int speed) {
-        setSpeed(speed);
-    }
-
     public SpeedometerHelper() {
-        setSpeed(this.speed);
-    }
-
-    /**
-     * Set current speed
-     */
-    public void setSpeed(int speed) {
-        if (speed < 0) {
-            this.speed = 0;
-        } else
-            this.speed = Math.min(speed, maxScaleValue);
-
-        this.speedAngle = ((float) SCALE_SWEEP_ANGLE
-                * (float) this.speed) / (float) maxScaleValue;
-    }
-
-    /**
-     * Get current speed
-     */
-    public int getSpeed() {
-        return this.speed;
-    }
-
-    /**
-     * Get angle for current speed
-     */
-    public float getSpeedAngle() {
-        return this.speedAngle;
     }
 
     /**
@@ -156,22 +125,6 @@ public class SpeedometerHelper {
         return circleRadius + getScalePadding() + dotsMargin + getDotRadius();
     }
 
-    /**
-     * Check if the speed has reached this point
-     *
-     * @param dotNumber is number of current point
-     */
-    public boolean pointReached(int dotNumber) {
-        return this.speed >= dotNumber * MAJOR_TICKS;
-    }
-
-    /**
-     * Get rotation needle angle for current speed
-     */
-    public float getNeedleAngle() {
-        return this.speedAngle - (180 - SCALE_BEGIN_ANGLE);
-    }
-
     private void setNeedleWidth() {
         this.needleEndWidth = this.scaleSize / 32.5f;
         this.needleBeginWidth = this.needleEndWidth * 2;
@@ -234,8 +187,50 @@ public class SpeedometerHelper {
     }
 
 
-
     /* STATIC METHODS */
+
+
+    /**
+     * Set current speed
+     */
+    public static void setSpeed(int newSpeed) {
+        if (newSpeed < 0) {
+            speed = 0;
+        } else
+            speed = Math.min(newSpeed, maxScaleValue);
+
+        maxSpeed = Math.max(maxSpeed, speed);
+        speedAngle = ((float) SCALE_SWEEP_ANGLE * (float) speed)
+                / (float) maxScaleValue;
+    }
+
+    /**
+     * Get current speed
+     */
+    public static int getSpeed() {
+        return speed;
+    }
+
+    /**
+     * Get maximum speed
+     */
+    public static int getMaxSpeed() {
+        return maxSpeed;
+    }
+
+    /**
+     * Get maximum speed
+     */
+    public static void setMaxSpeed(int newMaxSpeed) {
+        maxSpeed = newMaxSpeed;
+    }
+
+    /**
+     * Get angle for current speed
+     */
+    public float getSpeedAngle() {
+        return speedAngle;
+    }
 
     /**
      * Generate random speed
@@ -268,6 +263,42 @@ public class SpeedometerHelper {
             maxScaleValue = DEFAULT_MAX_SCALE_VALUE_MPH;
         }
         scaleSectorsCount = maxScaleValue / MAJOR_TICKS;
+    }
+
+    /**
+     * Get converted speed from km/h to mph
+     *
+     * @param kmh is speed in km/h
+     * @return speed in mph
+     */
+    public static int convertSpeedToMph(int kmh) {
+        return Math.round(kmh / 1.609344f);
+    }
+
+    /**
+     * Get converted speed from mph to km/h
+     *
+     * @param mph is speed in mph
+     * @return speed in km/h
+     */
+    public static int convertSpeedToKmh(int mph) {
+        return Math.round(mph * 1.609344f);
+    }
+
+    /**
+     * Change speed units
+     */
+    public static void changeSpeedUnits(int newSpeedUnits) {
+        if (speedUnits != newSpeedUnits) {
+            if (newSpeedUnits == SpeedometerHelper.SPEED_UNITS_KMH) {
+                maxSpeed = SpeedometerHelper.convertSpeedToKmh(maxSpeed);
+                speed = SpeedometerHelper.convertSpeedToKmh(speed);
+            } else {
+                maxSpeed = SpeedometerHelper.convertSpeedToMph(maxSpeed);
+                speed = SpeedometerHelper.convertSpeedToMph(speed);
+            }
+            setSpeedUnits(newSpeedUnits);
+        }
     }
 
     /**
@@ -306,6 +337,22 @@ public class SpeedometerHelper {
      */
     public static float getDotY(float angle, float circleRadius, float dotOffset) {
         return (float) ((Math.sin(Math.toRadians(angle)) * circleRadius) + dotOffset);
+    }
+
+    /**
+     * Check if the speed has reached this point
+     *
+     * @param dotNumber is number of current point
+     */
+    public static boolean pointReached(int dotNumber) {
+        return speed >= dotNumber * MAJOR_TICKS;
+    }
+
+    /**
+     * Get rotation needle angle for current speed
+     */
+    public static float getNeedleAngle() {
+        return speedAngle - (180 - SCALE_BEGIN_ANGLE);
     }
 
     /**

@@ -1,8 +1,10 @@
 package com.speedometerrit.helpers;
 
+import android.widget.FrameLayout;
+
 import java.util.Random;
 
-public class WidgetNamesGenerator {
+public class WidgetNamesManager {
     // Central (big) widget names
     public static final String ONE_LINE_SPEEDOMETER_VIEW = "OneLineSpeedometer";
     public static final String DOTS_SPEEDOMETER_VIEW = "DotsSpeedometer";
@@ -12,7 +14,7 @@ public class WidgetNamesGenerator {
     public static final String MAX_SPEED_VIEW = "MaxSpeed";
     public static final String CURRENT_TIME_VIEW = "CurrentTime";
 
-    private WidgetNamesGenerator() {
+    private WidgetNamesManager() {
     }
 
     /**
@@ -43,5 +45,21 @@ public class WidgetNamesGenerator {
         Random random = new Random();
         int randomIndex = random.nextInt(widgets.length);
         return widgets[randomIndex];
+    }
+
+    public static boolean isMiniSpeedometer(FrameLayout viewContainer) {
+        Object widgetName = viewContainer.getTag();
+        if (widgetName != null) {
+            return widgetName.equals(WidgetNamesManager.MINI_SPEEDOMETER_VIEW);
+        }
+        return false;
+    }
+
+    public static boolean isMaxSpeedView(FrameLayout viewContainer) {
+        Object widgetName = viewContainer.getTag();
+        if (widgetName != null) {
+            return widgetName.equals(WidgetNamesManager.MAX_SPEED_VIEW);
+        }
+        return false;
     }
 }

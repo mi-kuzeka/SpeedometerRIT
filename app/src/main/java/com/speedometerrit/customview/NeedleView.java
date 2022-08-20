@@ -6,7 +6,6 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.RectF;
-import android.view.View;
 
 import com.speedometerrit.helpers.ColorManager;
 import com.speedometerrit.helpers.SpeedometerHelper;
