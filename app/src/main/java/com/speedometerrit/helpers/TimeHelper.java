@@ -24,6 +24,12 @@ public class TimeHelper {
         this.amPm = getAmPm();
     }
 
+    public void refreshCurrentTime() {
+        this.currentTime = Calendar.getInstance();
+        this.time = getTimeString();
+        this.amPm = getAmPm();
+    }
+
     public Calendar getCurrentTime() {
         return this.currentTime;
     }
