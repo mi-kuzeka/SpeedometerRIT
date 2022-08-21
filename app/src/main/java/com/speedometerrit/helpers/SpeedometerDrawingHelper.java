@@ -182,7 +182,7 @@ public class SpeedometerDrawingHelper {
     /**
      * Get angle for current speed
      */
-    public float getSpeedAngle() {
+    public static float getSpeedAngle() {
         return speedAngle;
     }
 
