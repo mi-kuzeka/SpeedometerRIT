@@ -71,17 +71,7 @@ public class DotsScaleView extends View {
         paint.setShader(null);
 
         // Draw dots
-        float circleRadius = speedometerHelper.getDotCircleRadius();
-        float dotOffset = speedometerHelper.getDotOffset(circleRadius);
-        paint.setStyle(Paint.Style.FILL);
-        paint.setStrokeWidth(0);
-
-        for (int dotNumber = 1;
-             dotNumber <= SpeedometerHelper.getDotsCount();
-             dotNumber++) {
-
-            drawDots(canvas, dotNumber, circleRadius, dotOffset);
-        }
+        drawDots(canvas);
     }
 
     private void drawOuterCircle(Canvas canvas) {
@@ -130,21 +120,21 @@ public class DotsScaleView extends View {
                 SpeedometerHelper.SCALE_SWEEP_ANGLE, false, paint);
     }
 
-    private void drawDots(Canvas canvas,
-                          int dotNumber,
-                          float circleRadius,
-                          float dotOffset) {
-        int pointColorId;
-        if (SpeedometerHelper.pointReached(dotNumber)) {
-            pointColorId = ColorManager.getReachedPointColor();
-        } else {
-            pointColorId = ColorManager.getPointColor();
-        }
-        paint.setColor(getColor(pointColorId));
+    private void drawDots(Canvas canvas) {
+        float circleRadius = speedometerHelper.getDotCircleRadius();
+        float dotOffset = speedometerHelper.getDotOffset(circleRadius);
+        paint.setStyle(Paint.Style.FILL);
+        paint.setStrokeWidth(0);
+        paint.setColor(getColor(ColorManager.getPointColor()));
 
-        float angle = SpeedometerHelper.getDotAngle(dotNumber);
-        float x = SpeedometerHelper.getDotX(angle, circleRadius, dotOffset);
-        float y = SpeedometerHelper.getDotY(angle, circleRadius, dotOffset);
-        canvas.drawCircle(x, y, speedometerHelper.getDotRadius(), paint);
+        for (int dotNumber = 1;
+             dotNumber <= SpeedometerHelper.getDotsCount();
+             dotNumber++) {
+
+            float angle = SpeedometerHelper.getDotAngle(dotNumber);
+            float x = SpeedometerHelper.getDotX(angle, circleRadius, dotOffset);
+            float y = SpeedometerHelper.getDotY(angle, circleRadius, dotOffset);
+            canvas.drawCircle(x, y, speedometerHelper.getDotRadius(), paint);
+        }
     }
 }

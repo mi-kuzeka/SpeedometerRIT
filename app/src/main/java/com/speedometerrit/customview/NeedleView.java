@@ -60,7 +60,8 @@ public class NeedleView extends SpeedView {
     }
 
     protected void drawScale(Canvas canvas) {
-        paint.setStrokeWidth(speedometerHelper.getScaleThickness());
+        // Draw dots
+        drawDots(canvas);
 
         float innerCircleMargin = speedometerHelper
                 .getInnerCircleTopLeftMargin(innerCircleSize);
@@ -73,6 +74,27 @@ public class NeedleView extends SpeedView {
         float centerCircleRadius =
                 speedometerHelper.getCenterCircleRadius(center, innerCircleMargin);
         drawCenterCircle(canvas, center, centerCircleRadius);
+    }
+
+    private void drawDots(Canvas canvas) {
+        float circleRadius = speedometerHelper.getDotCircleRadius();
+        float dotOffset = speedometerHelper.getDotOffset(circleRadius);
+        paint.setStyle(Paint.Style.FILL);
+        paint.setColor(getColor(ColorManager.getReachedPointColor()));
+//        paint.setStrokeWidth(0);
+
+        for (int dotNumber = 1;
+             dotNumber <= SpeedometerHelper.getDotsCount();
+             dotNumber++) {
+
+            // Draw only reached points
+            if (!SpeedometerHelper.pointReached(dotNumber)) break;
+
+            float angle = SpeedometerHelper.getDotAngle(dotNumber);
+            float x = SpeedometerHelper.getDotX(angle, circleRadius, dotOffset);
+            float y = SpeedometerHelper.getDotY(angle, circleRadius, dotOffset);
+            canvas.drawCircle(x, y, speedometerHelper.getDotRadius(), paint);
+        }
     }
 
     private void drawNeedle(Canvas canvas, float center) {
