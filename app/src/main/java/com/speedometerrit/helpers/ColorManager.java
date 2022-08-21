@@ -17,7 +17,7 @@ public class ColorManager {
     public static void setRandomMainColor() {
         int oldColorId = colorId;
         while (oldColorId == colorId) {
-            colorId = getRandomColor();
+            setMainColor(getRandomColor());
         }
     }
 
@@ -48,11 +48,11 @@ public class ColorManager {
         return colors[randomIndex];
     }
 
-    public static int getDefaultTextColor() {
+    public static int getTextColor() {
         return R.color.white;
     }
 
-    public static int getDefaultOneLineScaleColor() {
+    public static int getOneLineScaleColor() {
         return R.color.dark_grey;
     }
 
@@ -60,7 +60,7 @@ public class ColorManager {
         return R.color.gray;
     }
 
-    public static int getCenterCircleColor() {
+    public static int getCentralCircleColor() {
         return R.color.black;
     }
 

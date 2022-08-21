@@ -10,13 +10,13 @@ import android.widget.TextView;
 import com.speedometerrit.R;
 import com.speedometerrit.helpers.ColorManager;
 
+/**
+ * Parent class for mini widgets
+ */
 public class MiniWidget extends ConstraintLayout {
-    private ConstraintLayout layout = null;
     private TextView textView = null;
     private ImageView topImageView = null;
     private ImageView bottomImageView = null;
-    private int textColor;
-    private String text = "";
 
     public MiniWidget(@NonNull Context context) {
         super(context);
@@ -27,24 +27,19 @@ public class MiniWidget extends ConstraintLayout {
         String service = Context.LAYOUT_INFLATER_SERVICE;
         LayoutInflater li = (LayoutInflater) getContext().getSystemService(service);
 
-        layout = (ConstraintLayout)
+        ConstraintLayout layout = (ConstraintLayout)
                 li.inflate(R.layout.mini_widget, this, true);
 
         topImageView = layout.findViewById(R.id.top_image);
         textView = layout.findViewById(R.id.text_view);
         bottomImageView = layout.findViewById(R.id.bottom_image);
 
-        textColor = getResources().getColor(ColorManager.getDefaultTextColor());
+        int textColor = getResources().getColor(ColorManager.getTextColor());
         textView.setTextColor(textColor);
     }
 
     protected void setText(String text) {
-        this.text = text;
         textView.setText(text);
-    }
-
-    protected String getText() {
-        return this.text;
     }
 
     protected void setTopImage(int imageId) {

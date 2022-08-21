@@ -9,15 +9,17 @@ import android.widget.TextView;
 
 import com.speedometerrit.R;
 import com.speedometerrit.customview.OneLineScaleView;
-import com.speedometerrit.customview.SpeedProgressView;
-import com.speedometerrit.customview.SpeedView;
+import com.speedometerrit.customview.SpeedLineView;
 import com.speedometerrit.helpers.ColorManager;
 import com.speedometerrit.helpers.SpeedometerHelper;
 
+/**
+ * Small "one-line" speedometer widget (without needle)
+ */
 public class MiniSpeedometerView extends ConstraintLayout {
     private TextView speedTextView = null;
-    private ImageView amPmImageView = null;
-    private SpeedProgressView speedView;
+    private ImageView speedUnitsImageView = null;
+    private SpeedLineView speedView;
 
     public MiniSpeedometerView(Context context) {
         super(context);
@@ -31,23 +33,27 @@ public class MiniSpeedometerView extends ConstraintLayout {
         ConstraintLayout layout = (ConstraintLayout)
                 li.inflate(R.layout.mini_speedometer, this, true);
 
-        FrameLayout scaleContainer = layout.findViewById(R.id.mini_scale_container);
         speedTextView = layout.findViewById(R.id.mini_speed_text_view);
-        amPmImageView = layout.findViewById(R.id.am_pm_image_view);
+        speedUnitsImageView = layout.findViewById(R.id.speed_units_image_view);
 
-        int textColor = getResources().getColor(ColorManager.getDefaultTextColor());
+        int textColor = getResources().getColor(ColorManager.getTextColor());
         speedTextView.setTextColor(textColor);
         speedTextView.setText(String.valueOf(SpeedometerHelper.getSpeed()));
 
         setSpeedUnits(SpeedometerHelper.getSpeedUnits());
 
+        FrameLayout scaleContainer = layout.findViewById(R.id.mini_scale_container);
+        // Add fixed scale
         OneLineScaleView scaleView = new OneLineScaleView(context, true);
         scaleContainer.addView(scaleView);
-        speedView = new SpeedProgressView(context, true);
+        // Add view that draws speed progress on the scale
+        speedView = new SpeedLineView(context, true);
         scaleContainer.addView(speedView);
     }
 
     public void setSpeed(int speed) {
+        if (speed < 0) speed = 0;
+        // Draw speed on the scale
         speedView.setSpeed(speed);
         speedTextView.setText(String.valueOf(speed));
     }
@@ -61,14 +67,14 @@ public class MiniSpeedometerView extends ConstraintLayout {
     }
 
     private void setUnitsKMH() {
-        setAmPmImage(R.drawable.ic_widgets_desc_kmh);
+        setSpeedUnitsImage(R.drawable.ic_widgets_desc_kmh);
     }
 
     private void setUnitsMPH() {
-        setAmPmImage(R.drawable.ic_widgets_desc_mph);
+        setSpeedUnitsImage(R.drawable.ic_widgets_desc_mph);
     }
 
-    private void setAmPmImage(int imageId) {
-        amPmImageView.setImageResource(imageId);
+    private void setSpeedUnitsImage(int imageId) {
+        speedUnitsImageView.setImageResource(imageId);
     }
 }

@@ -11,30 +11,37 @@ import android.view.animation.LinearInterpolator;
 import com.speedometerrit.helpers.ColorManager;
 import com.speedometerrit.helpers.SpeedometerHelper;
 
-public class SpeedProgressView extends SpeedView {
+/**
+ * This class is draws speed line for OneLineSpeedometer
+ * relative to current speed
+ */
+public class SpeedLineView extends SpeedView {
     private SpeedometerHelper speedometerHelper;
 
     // Paint object for coloring and styling
     private Paint paint;
     // Current speed sector color
     private int speedColor;
-    private int scaleSize = 0; // Scale size
-    private float scalePadding = 0; // Padding of scale
+    // Parent view size
+    private int viewSize = 0;
+    private float scalePadding = 0;
+    // The flag indicates that the view is called from mini widget
     private final boolean isSmallWidget;
 
+    // Current speed - used to display speed animation
     private int currentSpeed = 0;
     // Duration of animation
     private int animationDuration;
     // Holder of animation values
     private final String SPEED_VALUE_HOLDER = "speed";
 
-    public SpeedProgressView(Context context) {
+    public SpeedLineView(Context context) {
         super(context);
         this.isSmallWidget = false;
         init();
     }
 
-    public SpeedProgressView(Context context, boolean isSmallWidget) {
+    public SpeedLineView(Context context, boolean isSmallWidget) {
         super(context);
         this.isSmallWidget = isSmallWidget;
         init();
@@ -62,6 +69,7 @@ public class SpeedProgressView extends SpeedView {
 
     @Override
     public void setSpeed(int newSpeed) {
+        // Create animation for speed changing
         PropertyValuesHolder valuesHolder =
                 PropertyValuesHolder.ofInt(SPEED_VALUE_HOLDER, currentSpeed, newSpeed);
 
@@ -79,10 +87,11 @@ public class SpeedProgressView extends SpeedView {
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 
-        scaleSize = Math.min(getMeasuredWidth(), getMeasuredHeight());
-        setMeasuredDimension(scaleSize, scaleSize);
+        // Get view size in pixels
+        viewSize = Math.min(getMeasuredWidth(), getMeasuredHeight());
+        setMeasuredDimension(viewSize, viewSize);
 
-        speedometerHelper.setScaleSize(scaleSize, isSmallWidget);
+        speedometerHelper.setScaleSize(viewSize, isSmallWidget);
         scalePadding = speedometerHelper.getScalePadding();
     }
 
@@ -90,6 +99,7 @@ public class SpeedProgressView extends SpeedView {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
+        // Draw speed line on the scale
         drawSpeedProgress(canvas);
     }
 
@@ -98,11 +108,12 @@ public class SpeedProgressView extends SpeedView {
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeWidth(speedometerHelper.getScaleThickness());
 
-        // Draw speed progress
+        // Create scale bounds
         RectF oval = new RectF(scalePadding, scalePadding,
-                scaleSize - scalePadding, scaleSize - scalePadding);
+                viewSize - scalePadding, viewSize - scalePadding);
 
+        // Draw speed progress
         canvas.drawArc(oval, SpeedometerHelper.SCALE_BEGIN_ANGLE,
-                speedometerHelper.getSpeedAngle(currentSpeed), false, paint);
+                SpeedometerHelper.getSpeedAngle(currentSpeed), false, paint);
     }
 }

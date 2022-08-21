@@ -12,7 +12,7 @@ import android.widget.FrameLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
-import com.speedometerrit.customview.SpeedometerView;
+import com.speedometerrit.customview.CentralSpeedometerView;
 import com.speedometerrit.helpers.WidgetNamesManager;
 import com.speedometerrit.helpers.ColorManager;
 import com.speedometerrit.helpers.SpeedometerHelper;
@@ -25,14 +25,16 @@ import com.speedometerrit.speedometerwidgets.OneLineSpeedometerView;
 
 
 public class MainActivity extends AppCompatActivity {
+    // Handler for generation random speed
     private final Handler handler = new Handler();
     private Runnable runnable;
     private final int delay = 2000; // Update speed every 2 sec
 
     // Gesture detector for tracking touches
     private GestureDetector gestureDetector;
-
+    // Manager for updating speed in widgets
     private WidgetsSpeedManager widgetsSpeedManager;
+
     // Ensures that all widgets have been loaded
     private boolean widgetsLoaded = false;
     // Animation time
@@ -42,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
     private ConstraintLayout transitionsContainer;
 
     // Widget containers
-    private FrameLayout speedometerViewContainer;
+    private FrameLayout centralViewContainer;
     private FrameLayout leftViewContainer;
     private FrameLayout rightViewContainer;
 
@@ -52,13 +54,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         init();
-    }
-
-    @Override
-    protected void onPause() {
-        // Stop handler when activity isn't visible
-        handler.removeCallbacks(runnable);
-        super.onPause();
     }
 
     @Override
@@ -74,6 +69,13 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
     }
 
+    @Override
+    protected void onPause() {
+        // Stop handler when activity isn't visible
+        handler.removeCallbacks(runnable);
+        super.onPause();
+    }
+
     private void init() {
         // Set container for animation
         transitionsContainer = findViewById(R.id.main_layout);
@@ -82,13 +84,12 @@ public class MainActivity extends AppCompatActivity {
                 android.R.integer.config_shortAnimTime);
 
         // View containers
-        speedometerViewContainer = findViewById(R.id.speedometer_view);
+        centralViewContainer = findViewById(R.id.central_view);
         leftViewContainer = findViewById(R.id.left_view);
         rightViewContainer = findViewById(R.id.right_view);
 
         widgetsSpeedManager = new WidgetsSpeedManager(leftViewContainer,
-                speedometerViewContainer,
-                rightViewContainer);
+                centralViewContainer, rightViewContainer);
 
         // Init speed units radioGroup
         RadioGroup speedUnitsGroup = findViewById(R.id.speed_units_group);
@@ -99,6 +100,7 @@ public class MainActivity extends AppCompatActivity {
                 setSpeedUnits(SpeedometerHelper.SPEED_UNITS_MPH);
             }
         });
+        // Set defaults speed units - km/h
         RadioButton kmhButton = findViewById(R.id.kmh_button);
         kmhButton.setChecked(true);
 
@@ -118,7 +120,6 @@ public class MainActivity extends AppCompatActivity {
      */
     private void setSpeedUnits(int speedUnits) {
         SpeedometerHelper.changeSpeedUnits(speedUnits);
-        widgetsSpeedManager.updateMaxSpeed();
         reloadViews();
     }
 
@@ -139,46 +140,69 @@ public class MainActivity extends AppCompatActivity {
         // Generate random widget name for central view
         String widgetName = WidgetNamesManager.getCentralWidgetName();
         // There's no need to replace view with the same one
-        if (speedometerViewContainer.getTag() == widgetName) return;
+        if (centralViewContainer.getTag() == widgetName) return;
 
         // Replace widget with new one
         setCentralWidget(widgetName);
     }
 
     private void setRandomMiniWidget(FrameLayout viewContainer) {
+        // Generate random widget name for side view
         String widgetName = WidgetNamesManager.getMiniWidgetName();
+        // There's no need to replace view with the same one
         if (viewContainer.getTag() == widgetName) return;
 
+        // Replace widget with new one
         setMiniWidget(viewContainer, widgetName);
     }
 
+    /**
+     * Set certain widget to central view container
+     *
+     * @param widgetName is the name of widget from {@link WidgetNamesManager}
+     */
     private void setCentralWidget(String widgetName) {
-        speedometerViewContainer.setTag(widgetName);
-        speedometerViewContainer.removeAllViews();
+        // Save widget name to container tag
+        centralViewContainer.setTag(widgetName);
+        // Remove previous widget
+        centralViewContainer.removeAllViews();
 
-        SpeedometerView speedometerView;
-
+        CentralSpeedometerView centralSpeedometerView;
+        // Create required widget
         if (WidgetNamesManager.DOTS_SPEEDOMETER_VIEW.equals(widgetName)) {
-            speedometerView = new DotsSpeedometerView(this);
+            centralSpeedometerView = new DotsSpeedometerView(this);
         } else {
-            speedometerView = new OneLineSpeedometerView(this);
+            centralSpeedometerView = new OneLineSpeedometerView(this);
         }
-        speedometerView.setSpeed(SpeedometerHelper.getSpeed());
-        speedometerViewContainer.addView(speedometerView);
+        // Set current speed to widget
+        centralSpeedometerView.setSpeed(SpeedometerHelper.getSpeed());
+        // Add widget to container
+        centralViewContainer.addView(centralSpeedometerView);
     }
 
+    /**
+     * Set certain widget to side view container
+     *
+     * @param viewContainer is container for widget
+     * @param widgetName    is the name of widget from {@link WidgetNamesManager}
+     */
     private void setMiniWidget(FrameLayout viewContainer, String widgetName) {
+        // Save widget name to container tag
         viewContainer.setTag(widgetName);
+        // Remove previous widget
         viewContainer.removeAllViews();
 
+        // Find required widget name and add it to view container
         switch (widgetName) {
             case WidgetNamesManager.MINI_SPEEDOMETER_VIEW:
                 MiniSpeedometerView speedometerView = new MiniSpeedometerView(this);
+                // Set current speed to widget
                 speedometerView.setSpeed(SpeedometerHelper.getSpeed());
                 viewContainer.addView(speedometerView);
                 break;
             case WidgetNamesManager.MAX_SPEED_VIEW:
                 MaxSpeedView maxSpeedView = new MaxSpeedView(this);
+                // Set max speed to widget
                 maxSpeedView.setMaxSpeed(SpeedometerHelper.getMaxSpeed());
                 viewContainer.addView(maxSpeedView);
                 break;
@@ -191,6 +215,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Gesture listener for tracking touches
+      */
     private class GestureListener extends GestureDetector.SimpleOnGestureListener {
 
         @Override
@@ -202,6 +229,7 @@ public class MainActivity extends AppCompatActivity {
         public boolean onSingleTapConfirmed(MotionEvent e) {
             if (!widgetsLoaded) return true;
             initAnimation();
+            // Replace widgets with new random widgets
             setRandomViews();
             return true;
         }
@@ -228,10 +256,13 @@ public class MainActivity extends AppCompatActivity {
         TransitionManager.beginDelayedTransition(transitionsContainer, autoTransition);
     }
 
+    /**
+     * Repaint all widgets
+     */
     private void reloadViews() {
-        Object centralWidgetName = speedometerViewContainer.getTag();
+        Object centralWidgetName = centralViewContainer.getTag();
         if (centralWidgetName != null) {
-            speedometerViewContainer.removeAllViews();
+            centralViewContainer.removeAllViews();
             setCentralWidget((String) centralWidgetName);
         }
 

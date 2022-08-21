@@ -7,9 +7,11 @@ import com.speedometerrit.R;
 import com.speedometerrit.customview.MiniWidget;
 import com.speedometerrit.helpers.SpeedometerHelper;
 
+/**
+ * Small widget that displays maximum speed
+ */
 public class MaxSpeedView extends MiniWidget {
     private int maxSpeed = 0;
-    private int speedUnits;
 
     public MaxSpeedView(@NonNull Context context) {
         super(context);
@@ -28,8 +30,7 @@ public class MaxSpeedView extends MiniWidget {
     }
 
     public void setSpeedUnits(int speedUnits) {
-        this.speedUnits = speedUnits;
-        if (this.speedUnits == SpeedometerHelper.SPEED_UNITS_KMH) {
+        if (speedUnits == SpeedometerHelper.SPEED_UNITS_KMH) {
             setUnitsKMH();
         } else {
             setUnitsMPH();

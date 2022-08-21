@@ -1,14 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <dimen name="padding_bottom">16dp</dimen>
+
+    <!-- Central widget dimens -->
     <dimen name="speedometer_width">220dp</dimen>
     <dimen name="speedometer_height">220dp</dimen>
+    <dimen name="speedometer_text_size">40sp</dimen>
+
+    <!-- Mini widget dimens -->
     <dimen name="mini_view_width">120dp</dimen>
     <dimen name="mini_view_height">120dp</dimen>
-    <dimen name="padding_bottom">16dp</dimen>
-    <dimen name="speedometer_text_size">40sp</dimen>
     <dimen name="mini_view_text_size">24sp</dimen>
     <dimen name="mini_view_text_margin">15dp</dimen>
     <dimen name="mini_speedometer_padding">10dp</dimen>
+
+    <!-- Speed units radio group dimens -->
     <dimen name="speed_units_padding">20dp</dimen>
     <dimen name="speed_units_button_height">40dp</dimen>
     <dimen name="speed_units_button_width">50dp</dimen>

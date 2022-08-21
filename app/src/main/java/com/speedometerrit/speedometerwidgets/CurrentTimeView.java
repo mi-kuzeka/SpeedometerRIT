@@ -10,7 +10,11 @@ import com.speedometerrit.helpers.TimeHelper;
 
 import java.util.Calendar;
 
+/**
+ * Small widget that displays current time
+ */
 public class CurrentTimeView extends MiniWidget  {
+    // Handler for checking current time
     private final Handler handler = new Handler();
     private Runnable runnable;
     private final int delay = 5000; // Check time every 5 sec
@@ -27,11 +31,12 @@ public class CurrentTimeView extends MiniWidget  {
 
     private void init() {
         super.setTopImage(R.drawable.ic_widgets_name_time);
-        this.currentTime = Calendar.getInstance();
+
+        this.currentTime = Calendar.getInstance(); // Get current time
         timeHelper = new TimeHelper(this.currentTime);
         setTime();
 
-        // Refresh current time
+        // Check and refresh current time
         handler.postDelayed(runnable = () -> {
             handler.postDelayed(runnable, delay);
             timeHelper.refreshCurrentTime();

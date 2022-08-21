@@ -1,7 +1,5 @@
 package com.speedometerrit.helpers;
 
-import com.speedometerrit.R;
-
 import java.util.Random;
 
 public class SpeedometerHelper {
@@ -184,7 +182,7 @@ public class SpeedometerHelper {
      * @param center            is the center of speedometer
      * @param innerCircleMargin is margin of gray inner circle
      */
-    public float getCenterCircleRadius(float center, float innerCircleMargin) {
+    public float getCentralCircleRadius(float center, float innerCircleMargin) {
         return center - innerCircleMargin - getScalePadding();
     }
 

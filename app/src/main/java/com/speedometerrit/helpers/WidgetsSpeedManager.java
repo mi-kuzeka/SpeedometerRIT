@@ -4,10 +4,13 @@ import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 
-import com.speedometerrit.customview.SpeedometerView;
+import com.speedometerrit.customview.CentralSpeedometerView;
 import com.speedometerrit.speedometerwidgets.MaxSpeedView;
 import com.speedometerrit.speedometerwidgets.MiniSpeedometerView;
 
+/**
+ * This class updates speed at the widgets
+ */
 public class WidgetsSpeedManager {
     private final String LOG_TAG = WidgetsSpeedManager.class.getSimpleName();
 
@@ -25,7 +28,8 @@ public class WidgetsSpeedManager {
 
     public void setMaxSpeed(int newMaxSpeed) {
         SpeedometerHelper.setMaxSpeed(newMaxSpeed);
-        updateMaxSpeed();
+        setMaxSpeedToView(leftContainer);
+        setMaxSpeedToView(rightContainer);
     }
 
     public void setSpeed(int newSpeed) {
@@ -40,8 +44,8 @@ public class WidgetsSpeedManager {
         if (centralContainer.getTag() != null) {
             View view = centralContainer.getChildAt(0);
             try {
-                SpeedometerView speedometerView = (SpeedometerView) view;
-                speedometerView.setSpeed(SpeedometerHelper.getSpeed());
+                CentralSpeedometerView centralSpeedometerView = (CentralSpeedometerView) view;
+                centralSpeedometerView.setSpeed(SpeedometerHelper.getSpeed());
             } catch (ClassCastException e) {
                 Log.e(LOG_TAG, "Can't cast View to SpeedometerView");
             }
@@ -58,11 +62,6 @@ public class WidgetsSpeedManager {
                 Log.e(LOG_TAG, "Can't cast View to MiniSpeedometerView");
             }
         }
-    }
-
-    public void updateMaxSpeed() {
-        setMaxSpeedToView(leftContainer);
-        setMaxSpeedToView(rightContainer);
     }
 
     private void setMaxSpeedToView(FrameLayout viewContainer) {

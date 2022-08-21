@@ -1,11 +1,8 @@
 package com.speedometerrit.customview;
 
 import android.content.Context;
-import android.content.res.TypedArray;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
-import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,66 +11,47 @@ import android.widget.TextView;
 
 import com.speedometerrit.R;
 import com.speedometerrit.helpers.ColorManager;
-import com.speedometerrit.helpers.SpeedometerHelper;
 
-public class SpeedometerView extends ConstraintLayout {
-    private ConstraintLayout layout = null;
+/**
+ * Parent class for central widgets (speedometers)
+ */
+public class CentralSpeedometerView extends ConstraintLayout {
+    // TextView that displays current speed
     private TextView speedTextView = null;
+    // Container for scale (without speed progress)
     private FrameLayout scaleContainer = null;
+    // View that draws current speed on the scale
     private SpeedView speedView;
 
-    private int speed = 0;
-    private int speedUnits;
-    private int maxScaleValue;
-    private int textColor;
+    private final int textColor;
 
-    public SpeedometerView(@NonNull Context context) {
+    public CentralSpeedometerView(@NonNull Context context) {
         super(context);
-        textColor = getResources().getColor(ColorManager.getDefaultTextColor());
+        textColor = getResources().getColor(ColorManager.getTextColor());
         inflateLayout();
-    }
-
-    public SpeedometerView(@NonNull Context context, @Nullable AttributeSet attrs) {
-        super(context, attrs);
-
-        TypedArray attributes = context.obtainStyledAttributes(attrs,
-                R.styleable.SpeedometerView);
-        textColor = attributes.getColor(R.styleable.SpeedometerView_textColor,
-                ColorManager.getDefaultTextColor());
-        speed = attributes.getInt(R.styleable.SpeedometerView_speed,
-                0);
-        maxScaleValue = attributes.getInt(R.styleable.SpeedometerView_maxScaleValue,
-                SpeedometerHelper.getDefaultMaxScaleValue(speedUnits));
-
-        inflateLayout();
-
-        attributes.recycle();
     }
 
     private void inflateLayout() {
         String service = Context.LAYOUT_INFLATER_SERVICE;
         LayoutInflater li = (LayoutInflater) getContext().getSystemService(service);
 
-        layout = (ConstraintLayout)
-                li.inflate(R.layout.speedometer_view, this, true);
-
-        speedUnits = SpeedometerHelper.getSpeedUnits();
+        ConstraintLayout layout = (ConstraintLayout)
+                li.inflate(R.layout.speedometer, this, true);
 
         speedTextView = layout.findViewById(R.id.speed_text_view);
         scaleContainer = layout.findViewById(R.id.scale_container);
 
-        speedTextView.setText(String.valueOf(speed));
+        // Set default speed
+        speedTextView.setText(String.valueOf(0));
         speedTextView.setTextColor(textColor);
     }
 
     public void setSpeed(int speed) {
-        if (speed < 0) this.speed = 0;
+        // Speed can't be negative
+        if (speed < 0) speed = 0;
         speedTextView.setText(String.valueOf(speed));
+        // Set speed for drawing it on the scale
         if (this.speedView != null) this.speedView.setSpeed(speed);
-    }
-
-    protected int getSpeed() {
-        return this.speed;
     }
 
     protected void addScaleView(View scaleView) {

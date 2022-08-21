@@ -30,7 +30,7 @@
         tools:text="@string/time_sample" />
 
     <ImageView
-        android:id="@+id/am_pm_image_view"
+        android:id="@+id/speed_units_image_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:contentDescription="@string/bottom_image_desc"

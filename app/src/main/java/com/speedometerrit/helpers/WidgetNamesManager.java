@@ -47,6 +47,9 @@ public class WidgetNamesManager {
         return widgets[randomIndex];
     }
 
+    /**
+     * Check if container contains MiniSpeedometer
+     */
     public static boolean isMiniSpeedometer(FrameLayout viewContainer) {
         Object widgetName = viewContainer.getTag();
         if (widgetName != null) {
@@ -55,6 +58,9 @@ public class WidgetNamesManager {
         return false;
     }
 
+    /**
+     * Check if container contains MaxSpeedView
+     */
     public static boolean isMaxSpeedView(FrameLayout viewContainer) {
         Object widgetName = viewContainer.getTag();
         if (widgetName != null) {
