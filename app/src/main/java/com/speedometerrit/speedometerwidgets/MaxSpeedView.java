@@ -5,7 +5,7 @@ import android.support.annotation.NonNull;
 
 import com.speedometerrit.R;
 import com.speedometerrit.customview.MiniWidget;
-import com.speedometerrit.helpers.SpeedometerHelper;
+import com.speedometerrit.helpers.SpeedManager;
 
 /**
  * Small widget that displays maximum speed
@@ -21,7 +21,7 @@ public class MaxSpeedView extends MiniWidget {
     private void init() {
         super.setTopImage(R.drawable.ic_widgets_name_max_long);
         super.setText(String.valueOf(maxSpeed));
-        setSpeedUnits(SpeedometerHelper.getSpeedUnits());
+        setSpeedUnits(SpeedManager.getSpeedUnits());
     }
 
     public void setMaxSpeed(int speed) {
@@ -30,7 +30,7 @@ public class MaxSpeedView extends MiniWidget {
     }
 
     public void setSpeedUnits(int speedUnits) {
-        if (speedUnits == SpeedometerHelper.SPEED_UNITS_KMH) {
+        if (speedUnits == SpeedManager.SPEED_UNITS_KMH) {
             setUnitsKMH();
         } else {
             setUnitsMPH();

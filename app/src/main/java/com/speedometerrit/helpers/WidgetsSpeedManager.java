@@ -27,13 +27,13 @@ public class WidgetsSpeedManager {
     }
 
     public void setMaxSpeed(int newMaxSpeed) {
-        SpeedometerHelper.setMaxSpeed(newMaxSpeed);
+        SpeedManager.setMaxSpeed(newMaxSpeed);
         setMaxSpeedToView(leftContainer);
         setMaxSpeedToView(rightContainer);
     }
 
     public void setSpeed(int newSpeed) {
-        SpeedometerHelper.setSpeed(newSpeed);
+        SpeedManager.setSpeed(newSpeed);
 
         setSpeedToMiniSpeedometer(leftContainer);
         setSpeedToBigSpeedometer();
@@ -45,7 +45,7 @@ public class WidgetsSpeedManager {
             View view = centralContainer.getChildAt(0);
             try {
                 CentralSpeedometerView centralSpeedometerView = (CentralSpeedometerView) view;
-                centralSpeedometerView.setSpeed(SpeedometerHelper.getSpeed());
+                centralSpeedometerView.setSpeed(SpeedManager.getSpeed());
             } catch (ClassCastException e) {
                 Log.e(LOG_TAG, "Can't cast View to SpeedometerView");
             }
@@ -57,7 +57,7 @@ public class WidgetsSpeedManager {
             View view = viewContainer.getChildAt(0);
             try {
                 MiniSpeedometerView speedometerView = (MiniSpeedometerView) view;
-                speedometerView.setSpeed(SpeedometerHelper.getSpeed());
+                speedometerView.setSpeed(SpeedManager.getSpeed());
             } catch (ClassCastException e) {
                 Log.e(LOG_TAG, "Can't cast View to MiniSpeedometerView");
             }
@@ -69,7 +69,7 @@ public class WidgetsSpeedManager {
             View view = viewContainer.getChildAt(0);
             try {
                 MaxSpeedView maxSpeedView = (MaxSpeedView) view;
-                maxSpeedView.setMaxSpeed(SpeedometerHelper.getMaxSpeed());
+                maxSpeedView.setMaxSpeed(SpeedManager.getMaxSpeed());
             } catch (ClassCastException e) {
                 Log.e(LOG_TAG, "Can't cast View to MaxSpeedView");
             }

@@ -11,7 +11,7 @@ import com.speedometerrit.R;
 import com.speedometerrit.customview.OneLineScaleView;
 import com.speedometerrit.customview.SpeedLineView;
 import com.speedometerrit.helpers.ColorManager;
-import com.speedometerrit.helpers.SpeedometerHelper;
+import com.speedometerrit.helpers.SpeedManager;
 
 /**
  * Small "one-line" speedometer widget (without needle)
@@ -38,9 +38,9 @@ public class MiniSpeedometerView extends ConstraintLayout {
 
         int textColor = getResources().getColor(ColorManager.getTextColor());
         speedTextView.setTextColor(textColor);
-        speedTextView.setText(String.valueOf(SpeedometerHelper.getSpeed()));
+        speedTextView.setText(String.valueOf(SpeedManager.getSpeed()));
 
-        setSpeedUnits(SpeedometerHelper.getSpeedUnits());
+        setSpeedUnits(SpeedManager.getSpeedUnits());
 
         FrameLayout scaleContainer = layout.findViewById(R.id.mini_scale_container);
         // Add fixed scale
@@ -59,7 +59,7 @@ public class MiniSpeedometerView extends ConstraintLayout {
     }
 
     public void setSpeedUnits(int speedUnits) {
-        if (speedUnits == SpeedometerHelper.SPEED_UNITS_KMH) {
+        if (speedUnits == SpeedManager.SPEED_UNITS_KMH) {
             setUnitsKMH();
         } else {
             setUnitsMPH();

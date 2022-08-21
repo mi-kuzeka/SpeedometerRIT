@@ -13,9 +13,9 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
 import com.speedometerrit.customview.CentralSpeedometerView;
+import com.speedometerrit.helpers.SpeedManager;
 import com.speedometerrit.helpers.WidgetNamesManager;
 import com.speedometerrit.helpers.ColorManager;
-import com.speedometerrit.helpers.SpeedometerHelper;
 import com.speedometerrit.helpers.WidgetsSpeedManager;
 import com.speedometerrit.speedometerwidgets.CurrentTimeView;
 import com.speedometerrit.speedometerwidgets.DotsSpeedometerView;
@@ -62,8 +62,8 @@ public class MainActivity extends AppCompatActivity {
         handler.postDelayed(runnable = () -> {
             handler.postDelayed(runnable, delay);
             if (widgetsLoaded) {
-                widgetsSpeedManager.setSpeed(SpeedometerHelper.getRandomSpeed());
-                widgetsSpeedManager.setMaxSpeed(SpeedometerHelper.getRandomMaxSpeed());
+                widgetsSpeedManager.setSpeed(SpeedManager.getRandomSpeed());
+                widgetsSpeedManager.setMaxSpeed(SpeedManager.getRandomMaxSpeed());
             }
         }, delay);
         super.onResume();
@@ -95,9 +95,9 @@ public class MainActivity extends AppCompatActivity {
         RadioGroup speedUnitsGroup = findViewById(R.id.speed_units_group);
         speedUnitsGroup.setOnCheckedChangeListener((radioGroup, checkedId) -> {
             if (checkedId == R.id.kmh_button) {
-                setSpeedUnits(SpeedometerHelper.SPEED_UNITS_KMH);
+                setSpeedUnits(SpeedManager.SPEED_UNITS_KMH);
             } else if (checkedId == R.id.mph_button) {
-                setSpeedUnits(SpeedometerHelper.SPEED_UNITS_MPH);
+                setSpeedUnits(SpeedManager.SPEED_UNITS_MPH);
             }
         });
         // Set defaults speed units - km/h
@@ -109,17 +109,17 @@ public class MainActivity extends AppCompatActivity {
 
         // Create detector for tracking touches
         gestureDetector = new GestureDetector(this, new GestureListener());
-        widgetsSpeedManager.setSpeed(SpeedometerHelper.getRandomSpeed());
-        widgetsSpeedManager.setMaxSpeed(SpeedometerHelper.getRandomMaxSpeed());
+        widgetsSpeedManager.setSpeed(SpeedManager.getRandomSpeed());
+        widgetsSpeedManager.setMaxSpeed(SpeedManager.getRandomMaxSpeed());
     }
 
     /**
      * Change speed units
      *
-     * @param speedUnits is an integer value of units from {@link SpeedometerHelper}
+     * @param speedUnits is an integer value of units from {@link SpeedManager}
      */
     private void setSpeedUnits(int speedUnits) {
-        SpeedometerHelper.changeSpeedUnits(speedUnits);
+        SpeedManager.changeSpeedUnits(speedUnits);
         reloadViews();
     }
 
@@ -175,7 +175,7 @@ public class MainActivity extends AppCompatActivity {
             centralSpeedometerView = new OneLineSpeedometerView(this);
         }
         // Set current speed to widget
-        centralSpeedometerView.setSpeed(SpeedometerHelper.getSpeed());
+        centralSpeedometerView.setSpeed(SpeedManager.getSpeed());
         // Add widget to container
         centralViewContainer.addView(centralSpeedometerView);
     }
@@ -197,13 +197,13 @@ public class MainActivity extends AppCompatActivity {
             case WidgetNamesManager.MINI_SPEEDOMETER_VIEW:
                 MiniSpeedometerView speedometerView = new MiniSpeedometerView(this);
                 // Set current speed to widget
-                speedometerView.setSpeed(SpeedometerHelper.getSpeed());
+                speedometerView.setSpeed(SpeedManager.getSpeed());
                 viewContainer.addView(speedometerView);
                 break;
             case WidgetNamesManager.MAX_SPEED_VIEW:
                 MaxSpeedView maxSpeedView = new MaxSpeedView(this);
                 // Set max speed to widget
-                maxSpeedView.setMaxSpeed(SpeedometerHelper.getMaxSpeed());
+                maxSpeedView.setMaxSpeed(SpeedManager.getMaxSpeed());
                 viewContainer.addView(maxSpeedView);
                 break;
             case WidgetNamesManager.CURRENT_TIME_VIEW:

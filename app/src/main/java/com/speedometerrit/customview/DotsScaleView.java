@@ -9,14 +9,14 @@ import android.graphics.Shader;
 import android.view.View;
 
 import com.speedometerrit.helpers.ColorManager;
-import com.speedometerrit.helpers.SpeedometerHelper;
+import com.speedometerrit.helpers.SpeedometerDrawingHelper;
 
 /**
  * This class is draws scale for DotsSpeedometer -
  * only unchanged shapes
  */
 public class DotsScaleView extends View {
-    private final SpeedometerHelper speedometerHelper;
+    private final SpeedometerDrawingHelper speedometerDrawingHelper;
     // Paint object for coloring and styling
     private final Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
@@ -33,7 +33,7 @@ public class DotsScaleView extends View {
     public DotsScaleView(Context context) {
         super(context);
         setDefaultColors();
-        speedometerHelper = new SpeedometerHelper();
+        speedometerDrawingHelper = new SpeedometerDrawingHelper();
     }
 
     @Override
@@ -43,8 +43,8 @@ public class DotsScaleView extends View {
         viewSize = Math.min(getMeasuredWidth(), getMeasuredHeight());
         setMeasuredDimension((int) viewSize, (int) viewSize);
 
-        speedometerHelper.setScaleSize(viewSize, false);
-        innerCircleSize = speedometerHelper.getInnerCircleSize();
+        speedometerDrawingHelper.setScaleSize(viewSize, false);
+        innerCircleSize = speedometerDrawingHelper.getInnerCircleSize();
     }
 
     private void setDefaultColors() {
@@ -78,18 +78,18 @@ public class DotsScaleView extends View {
     }
 
     private void drawOuterScale(Canvas canvas) {
-        float scalePadding = speedometerHelper.getScalePadding();
+        float scalePadding = speedometerDrawingHelper.getScalePadding();
         // Set gradient
         paint.setShader(getScaleGradient(viewSize - scalePadding, scaleColor));
         paint.setStyle(Paint.Style.STROKE);
-        paint.setStrokeWidth(speedometerHelper.getScaleThickness());
+        paint.setStrokeWidth(speedometerDrawingHelper.getScaleThickness());
 
         // Create scale bounds
         RectF oval = new RectF(scalePadding, scalePadding,
                 viewSize - scalePadding, viewSize - scalePadding);
         // Draw scale
-        canvas.drawArc(oval, SpeedometerHelper.SCALE_BEGIN_ANGLE,
-                SpeedometerHelper.SCALE_SWEEP_ANGLE, false, paint);
+        canvas.drawArc(oval, SpeedometerDrawingHelper.SCALE_BEGIN_ANGLE,
+                SpeedometerDrawingHelper.SCALE_SWEEP_ANGLE, false, paint);
     }
 
     /**
@@ -105,8 +105,8 @@ public class DotsScaleView extends View {
         // Offset of circle gradient for smooth bounds at the bottom
         float gradientBeginAngleOffset = 10f;
         // Bottom Y coordinate for creating gradient
-        float gradientY1 = SpeedometerHelper.getDotY(
-                SpeedometerHelper.SCALE_BEGIN_ANGLE - gradientBeginAngleOffset,
+        float gradientY1 = SpeedometerDrawingHelper.getDotY(
+                SpeedometerDrawingHelper.SCALE_BEGIN_ANGLE - gradientBeginAngleOffset,
                 circleRadius,
                 0);
 
@@ -121,9 +121,9 @@ public class DotsScaleView extends View {
     }
 
     private void drawInnerScale(Canvas canvas) {
-        float topLeftMargin = speedometerHelper
+        float topLeftMargin = speedometerDrawingHelper
                 .getInnerCircleTopLeftMargin(innerCircleSize);
-        float rightBottomMargin = SpeedometerHelper
+        float rightBottomMargin = SpeedometerDrawingHelper
                 .getInnerCircleRightBottomCoordinate(innerCircleSize, topLeftMargin);
 
         // Set gradient
@@ -133,8 +133,8 @@ public class DotsScaleView extends View {
         RectF innerOval = new RectF(topLeftMargin, topLeftMargin,
                 rightBottomMargin, rightBottomMargin);
         // Draw scale
-        canvas.drawArc(innerOval, SpeedometerHelper.SCALE_BEGIN_ANGLE,
-                SpeedometerHelper.SCALE_SWEEP_ANGLE, false, paint);
+        canvas.drawArc(innerOval, SpeedometerDrawingHelper.SCALE_BEGIN_ANGLE,
+                SpeedometerDrawingHelper.SCALE_SWEEP_ANGLE, false, paint);
     }
 
     /**
@@ -142,9 +142,9 @@ public class DotsScaleView extends View {
      */
     private void drawDots(Canvas canvas) {
         // Radius of circle for drawing dots on it
-        float circleRadius = speedometerHelper.getDotCircleRadius();
+        float circleRadius = speedometerDrawingHelper.getDotCircleRadius();
         // Offset of dot relative to left/top bounds
-        float dotOffset = speedometerHelper.getDotOffset(circleRadius);
+        float dotOffset = speedometerDrawingHelper.getDotOffset(circleRadius);
 
         paint.setStyle(Paint.Style.FILL);
         paint.setStrokeWidth(0);
@@ -152,16 +152,16 @@ public class DotsScaleView extends View {
 
         // Draw dots on the circle
         for (int dotNumber = 1;
-             dotNumber <= SpeedometerHelper.getDotsCount();
+             dotNumber <= SpeedometerDrawingHelper.getDotsCount();
              dotNumber++) {
 
             // Get dot location angle on the circle
-            float angle = SpeedometerHelper.getDotAngle(dotNumber);
+            float angle = SpeedometerDrawingHelper.getDotAngle(dotNumber);
             // Calculate coordinates for drawing current dot
-            float x = SpeedometerHelper.getDotX(angle, circleRadius, dotOffset);
-            float y = SpeedometerHelper.getDotY(angle, circleRadius, dotOffset);
+            float x = SpeedometerDrawingHelper.getDotX(angle, circleRadius, dotOffset);
+            float y = SpeedometerDrawingHelper.getDotY(angle, circleRadius, dotOffset);
             // Draw dot
-            canvas.drawCircle(x, y, speedometerHelper.getDotRadius(), paint);
+            canvas.drawCircle(x, y, speedometerDrawingHelper.getDotRadius(), paint);
         }
     }
 }

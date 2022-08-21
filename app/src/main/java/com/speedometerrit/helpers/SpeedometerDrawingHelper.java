@@ -1,11 +1,6 @@
 package com.speedometerrit.helpers;
 
-import java.util.Random;
-
-public class SpeedometerHelper {
-    public static final int SPEED_UNITS_KMH = 0;
-    public static final int SPEED_UNITS_MPH = 1;
-
+public class SpeedometerDrawingHelper {
     // Angle of full scale
     public static final int SCALE_SWEEP_ANGLE = 270;
     // Begin angle for scale
@@ -21,17 +16,11 @@ public class SpeedometerHelper {
     // Maximum scale value for MPH
     public static final int DEFAULT_MAX_SCALE_VALUE_MPH = 160;
 
-    // Current speed units
-    private static int speedUnits = SPEED_UNITS_KMH;
     // Max value on the scale for current speed units
     private static int maxScaleValue = DEFAULT_MAX_SCALE_VALUE_KMH;
     // Count of scale sectors
     private static int scaleSectorsCount = maxScaleValue / MAJOR_TICKS;
 
-    // Current speed
-    private static int speed;
-    // Maximum speed
-    private static int maxSpeed;
     // Angle of speed point on the scale
     private static float speedAngle;
 
@@ -47,7 +36,7 @@ public class SpeedometerHelper {
     // Width of speedometer needle at the begin
     private float needleBeginWidth = 40f;
 
-    public SpeedometerHelper() {
+    public SpeedometerDrawingHelper() {
     }
 
     /**
@@ -191,44 +180,18 @@ public class SpeedometerHelper {
 
 
     /**
-     * Set current speed
-     */
-    public static void setSpeed(int newSpeed) {
-        if (newSpeed < 0) {
-            speed = 0;
-        } else
-            speed = Math.min(newSpeed, maxScaleValue);
-
-        speedAngle = ((float) SCALE_SWEEP_ANGLE * (float) speed)
-                / (float) maxScaleValue;
-    }
-
-    /**
-     * Get current speed
-     */
-    public static int getSpeed() {
-        return speed;
-    }
-
-    /**
-     * Get maximum speed
-     */
-    public static int getMaxSpeed() {
-        return maxSpeed;
-    }
-
-    /**
-     * Get maximum speed
-     */
-    public static void setMaxSpeed(int newMaxSpeed) {
-        maxSpeed = newMaxSpeed;
-    }
-
-    /**
      * Get angle for current speed
      */
     public float getSpeedAngle() {
         return speedAngle;
+    }
+
+    /**
+     * Set angle for current speed
+     */
+    public static void setSpeedAngle() {
+        speedAngle = ((float) SCALE_SWEEP_ANGLE * (float) SpeedManager.getSpeed())
+                / (float) maxScaleValue;
     }
 
     /**
@@ -240,41 +203,20 @@ public class SpeedometerHelper {
     }
 
     /**
-     * Generate random speed
-     */
-    public static int getRandomSpeed() {
-        Random random = new Random();
-        return random.nextInt(maxScaleValue);
-    }
-
-    /**
-     * Generate random maximum speed
-     */
-    public static int getRandomMaxSpeed() {
-        Random random = new Random();
-        int bound = maxScaleValue / 10 - 1;
-        // Get only multiples of ten speed values (can't be zero)
-        return random.nextInt(bound) * 10 + 10;
-    }
-
-    /**
      * Get the maximum scale value in current speed units
      */
-    public static int getDefaultMaxScaleValue(int speedUnits) {
-        if (speedUnits == SPEED_UNITS_KMH) return DEFAULT_MAX_SCALE_VALUE_KMH;
+    public static int getMaxScaleValue() {
+        if (SpeedManager.getSpeedUnits() == SpeedManager.SPEED_UNITS_KMH) {
+            return DEFAULT_MAX_SCALE_VALUE_KMH;
+        }
         return DEFAULT_MAX_SCALE_VALUE_MPH;
     }
 
     /**
-     * Get count of sectors on the scale
+     * Set the maximum scale value in current speed units
      */
-    public static int getScaleSectorsCount() {
-        return SpeedometerHelper.scaleSectorsCount;
-    }
-
-    public static void setSpeedUnits(int speedUnits) {
-        SpeedometerHelper.speedUnits = speedUnits;
-        if (speedUnits == SPEED_UNITS_KMH) {
+    public static void setMaxScaleValue() {
+        if (SpeedManager.getSpeedUnits() == SpeedManager.SPEED_UNITS_KMH) {
             maxScaleValue = DEFAULT_MAX_SCALE_VALUE_KMH;
         } else {
             maxScaleValue = DEFAULT_MAX_SCALE_VALUE_MPH;
@@ -283,70 +225,18 @@ public class SpeedometerHelper {
     }
 
     /**
-     * Get converted speed from km/h to mph
-     *
-     * @param kmh is speed in km/h
-     * @return speed in mph
+     * Get count of sectors on the scale
      */
-    public static int convertSpeedToMph(int kmh) {
-        return Math.round(kmh / 1.609344f);
-    }
-
-    /**
-     * Get converted speed from mph to km/h
-     *
-     * @param mph is speed in mph
-     * @return speed in km/h
-     */
-    public static int convertSpeedToKmh(int mph) {
-        return Math.round(mph * 1.609344f);
-    }
-
-    /**
-     * Change speed units
-     */
-    public static void changeSpeedUnits(int newSpeedUnits) {
-        if (speedUnits != newSpeedUnits) {
-            if (newSpeedUnits == SpeedometerHelper.SPEED_UNITS_KMH) {
-                speed = SpeedometerHelper.convertSpeedToKmh(speed);
-                maxSpeed = SpeedometerHelper.convertSpeedToKmh(maxSpeed);
-            } else {
-                speed = SpeedometerHelper.convertSpeedToMph(speed);
-                maxSpeed = SpeedometerHelper.convertSpeedToMph(maxSpeed);
-            }
-            // Round max speed
-            maxSpeed = roundToTen(maxSpeed);
-            setSpeedUnits(newSpeedUnits);
-        }
-    }
-
-    /**
-     * Round speed to integer which ends with 0
-     */
-    private static int roundToTen(int speed) {
-        // Smaller multiple
-        int smaller = (speed / 10) * 10;
-        // Larger multiple
-        int larger = smaller + 10;
-
-        if (smaller == 0) return larger;
-        // Return closest of two
-        return (speed - smaller > larger - speed) ? larger : smaller;
-    }
-
-    /**
-     * Get current speed units
-     */
-    public static int getSpeedUnits() {
-        return SpeedometerHelper.speedUnits;
+    public static int getScaleSectorsCount() {
+        return SpeedometerDrawingHelper.scaleSectorsCount;
     }
 
     /**
      * Get angle for current dot
      */
     public static float getDotAngle(int dotNumber) {
-        float dotAngle = SCALE_BEGIN_ANGLE +
-                ((float) SCALE_SWEEP_ANGLE / (float) scaleSectorsCount) * dotNumber;
+        float dotAngle = SCALE_BEGIN_ANGLE + dotNumber
+                * ((float) SCALE_SWEEP_ANGLE / (float) scaleSectorsCount);
         if (dotAngle < 360) return dotAngle;
         return dotAngle - 360;
     }
@@ -378,7 +268,7 @@ public class SpeedometerHelper {
      * @param dotNumber is number of current point
      */
     public static boolean pointReached(int dotNumber) {
-        return speed >= dotNumber * MAJOR_TICKS;
+        return SpeedManager.getSpeed() >= dotNumber * MAJOR_TICKS;
     }
 
     /**

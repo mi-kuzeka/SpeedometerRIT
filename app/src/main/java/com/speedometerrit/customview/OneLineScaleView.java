@@ -7,14 +7,14 @@ import android.graphics.RectF;
 import android.view.View;
 
 import com.speedometerrit.helpers.ColorManager;
-import com.speedometerrit.helpers.SpeedometerHelper;
+import com.speedometerrit.helpers.SpeedometerDrawingHelper;
 
 /**
  * This class is draws scale for OneLineSpeedometer -
  * only unchanged shapes
  */
 public class OneLineScaleView extends View {
-    private final SpeedometerHelper speedometerHelper;
+    private final SpeedometerDrawingHelper speedometerDrawingHelper;
 
     // Paint object for coloring and styling
     private final Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -29,14 +29,14 @@ public class OneLineScaleView extends View {
         super(context);
         setDefaultColor();
         this.isSmallWidget = false;
-        speedometerHelper = new SpeedometerHelper();
+        speedometerDrawingHelper = new SpeedometerDrawingHelper();
     }
 
     public OneLineScaleView(Context context, boolean isSmallWidget) {
         super(context);
         setDefaultColor();
         this.isSmallWidget = isSmallWidget;
-        speedometerHelper = new SpeedometerHelper();
+        speedometerDrawingHelper = new SpeedometerDrawingHelper();
     }
 
     @Override
@@ -47,8 +47,8 @@ public class OneLineScaleView extends View {
         viewSize = Math.min(getMeasuredWidth(), getMeasuredHeight());
         setMeasuredDimension(viewSize, viewSize);
 
-        speedometerHelper.setScaleSize(viewSize, isSmallWidget);
-        scalePadding = speedometerHelper.getScalePadding();
+        speedometerDrawingHelper.setScaleSize(viewSize, isSmallWidget);
+        scalePadding = speedometerDrawingHelper.getScalePadding();
     }
 
     private void setDefaultColor() {
@@ -69,13 +69,13 @@ public class OneLineScaleView extends View {
     protected void drawScale(Canvas canvas) {
         paint.setColor(scaleColor);
         paint.setStyle(Paint.Style.STROKE);
-        paint.setStrokeWidth(speedometerHelper.getScaleThickness());
+        paint.setStrokeWidth(speedometerDrawingHelper.getScaleThickness());
 
         // Get the scale bounds
         RectF oval = new RectF(scalePadding, scalePadding,
                 viewSize - scalePadding, viewSize - scalePadding);
         // Draw the scale
-        canvas.drawArc(oval, SpeedometerHelper.SCALE_BEGIN_ANGLE,
-                SpeedometerHelper.SCALE_SWEEP_ANGLE, false, paint);
+        canvas.drawArc(oval, SpeedometerDrawingHelper.SCALE_BEGIN_ANGLE,
+                SpeedometerDrawingHelper.SCALE_SWEEP_ANGLE, false, paint);
     }
 }

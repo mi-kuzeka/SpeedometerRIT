@@ -11,14 +11,15 @@ import android.graphics.RectF;
 import android.view.animation.LinearInterpolator;
 
 import com.speedometerrit.helpers.ColorManager;
-import com.speedometerrit.helpers.SpeedometerHelper;
+import com.speedometerrit.helpers.SpeedManager;
+import com.speedometerrit.helpers.SpeedometerDrawingHelper;
 
 /**
  * This class is draws needle and dots for DotsSpeedometer
  * relative to current speed
  */
 public class NeedleSpeedView extends SpeedView {
-    private final SpeedometerHelper speedometerHelper;
+    private final SpeedometerDrawingHelper speedometerDrawingHelper;
     // Paint object for coloring and styling
     private final Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
@@ -39,8 +40,8 @@ public class NeedleSpeedView extends SpeedView {
     public NeedleSpeedView(Context context) {
         super(context);
         setDefaultColors();
-        speedometerHelper = new SpeedometerHelper();
-        currentSpeed = SpeedometerHelper.getSpeed();
+        speedometerDrawingHelper = new SpeedometerDrawingHelper();
+        currentSpeed = SpeedManager.getSpeed();
 
         // Retrieve and cache the system's default "short" animation time.
         animationDuration = getResources().getInteger(
@@ -71,8 +72,8 @@ public class NeedleSpeedView extends SpeedView {
         viewSize = Math.min(getMeasuredWidth(), getMeasuredHeight());
         setMeasuredDimension((int) viewSize, (int) viewSize);
 
-        speedometerHelper.setScaleSize(viewSize, false);
-        innerCircleSize = speedometerHelper.getInnerCircleSize();
+        speedometerDrawingHelper.setScaleSize(viewSize, false);
+        innerCircleSize = speedometerDrawingHelper.getInnerCircleSize();
     }
 
     private void setDefaultColors() {
@@ -102,10 +103,10 @@ public class NeedleSpeedView extends SpeedView {
         drawNeedle(canvas, center);
 
         // Draw central circle
-        float innerCircleMargin = speedometerHelper
+        float innerCircleMargin = speedometerDrawingHelper
                 .getInnerCircleTopLeftMargin(innerCircleSize);
         float centralCircleRadius =
-                speedometerHelper.getCentralCircleRadius(center, innerCircleMargin);
+                speedometerDrawingHelper.getCentralCircleRadius(center, innerCircleMargin);
         drawCentralCircle(canvas, center, centralCircleRadius);
     }
 
@@ -114,28 +115,28 @@ public class NeedleSpeedView extends SpeedView {
      */
     private void drawDots(Canvas canvas) {
         // Radius of circle for drawing dots on it
-        float circleRadius = speedometerHelper.getDotCircleRadius();
+        float circleRadius = speedometerDrawingHelper.getDotCircleRadius();
         // Offset of dot relative to left/top bounds
-        float dotOffset = speedometerHelper.getDotOffset(circleRadius);
+        float dotOffset = speedometerDrawingHelper.getDotOffset(circleRadius);
 
         paint.setStyle(Paint.Style.FILL);
         paint.setColor(getColor(ColorManager.getReachedPointColor()));
 
         // Draw dots on the circle
         for (int dotNumber = 1;
-             dotNumber <= SpeedometerHelper.getDotsCount();
+             dotNumber <= SpeedometerDrawingHelper.getDotsCount();
              dotNumber++) {
 
             // Draw only reached points
-            if (!SpeedometerHelper.pointReached(dotNumber, currentSpeed)) break;
+            if (!SpeedometerDrawingHelper.pointReached(dotNumber, currentSpeed)) break;
 
             // Get dot location angle on the circle
-            float angle = SpeedometerHelper.getDotAngle(dotNumber);
+            float angle = SpeedometerDrawingHelper.getDotAngle(dotNumber);
             // Calculate coordinates for drawing current dot
-            float x = SpeedometerHelper.getDotX(angle, circleRadius, dotOffset);
-            float y = SpeedometerHelper.getDotY(angle, circleRadius, dotOffset);
+            float x = SpeedometerDrawingHelper.getDotX(angle, circleRadius, dotOffset);
+            float y = SpeedometerDrawingHelper.getDotY(angle, circleRadius, dotOffset);
             // Draw dot
-            canvas.drawCircle(x, y, speedometerHelper.getDotRadius(), paint);
+            canvas.drawCircle(x, y, speedometerDrawingHelper.getDotRadius(), paint);
         }
     }
 
@@ -147,10 +148,10 @@ public class NeedleSpeedView extends SpeedView {
         paint.setStyle(Paint.Style.FILL);
 
         // Offset of the needle relative to left bound of canvas
-        float needleOffset = speedometerHelper.getNeedleOffset();
-        float needleLength = speedometerHelper.getNeedleLength(needleOffset);
-        float needleBeginWidth = speedometerHelper.getNeedleBeginWidth();
-        float needleEndWidth = speedometerHelper.getNeedleEndWidth();
+        float needleOffset = speedometerDrawingHelper.getNeedleOffset();
+        float needleLength = speedometerDrawingHelper.getNeedleLength(needleOffset);
+        float needleBeginWidth = speedometerDrawingHelper.getNeedleBeginWidth();
+        float needleEndWidth = speedometerDrawingHelper.getNeedleEndWidth();
 
         float topLeftX = needleOffset;
         float topLeftY = center - needleEndWidth / 2;
@@ -179,7 +180,7 @@ public class NeedleSpeedView extends SpeedView {
         Matrix matrix = new Matrix();
         RectF bounds = new RectF();
         needle.computeBounds(bounds, true);
-        matrix.postRotate(SpeedometerHelper.getNeedleAngle(currentSpeed),
+        matrix.postRotate(SpeedometerDrawingHelper.getNeedleAngle(currentSpeed),
                 center, center);
         needle.transform(matrix);
 
