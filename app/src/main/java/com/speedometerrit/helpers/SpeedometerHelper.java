@@ -236,7 +236,7 @@ public class SpeedometerHelper {
     /**
      * Get angle for current speed
      */
-    public float getSpeedAngle(int currentSpeed) {
+    public static float getSpeedAngle(int currentSpeed) {
         return ((float) SCALE_SWEEP_ANGLE * (float) currentSpeed)
                 / (float) maxScaleValue;
     }
@@ -384,10 +384,27 @@ public class SpeedometerHelper {
     }
 
     /**
+     * Check if the speed has reached this point
+     *
+     * @param dotNumber    is number of current point
+     * @param currentSpeed is current speed
+     */
+    public static boolean pointReached(int dotNumber, int currentSpeed) {
+        return currentSpeed >= dotNumber * MAJOR_TICKS;
+    }
+
+    /**
      * Get rotation needle angle for current speed
      */
     public static float getNeedleAngle() {
         return speedAngle - (180 - SCALE_BEGIN_ANGLE);
+    }
+
+    /**
+     * Get rotation needle angle for current speed
+     */
+    public static float getNeedleAngle(int currentSpeed) {
+        return getSpeedAngle(currentSpeed) - (180 - SCALE_BEGIN_ANGLE);
     }
 
     /**

@@ -1,11 +1,14 @@
 package com.speedometerrit.customview;
 
+import android.animation.PropertyValuesHolder;
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.RectF;
+import android.view.animation.LinearInterpolator;
 
 import com.speedometerrit.helpers.ColorManager;
 import com.speedometerrit.helpers.SpeedometerHelper;
@@ -21,15 +24,36 @@ public class NeedleView extends SpeedView {
     private int needleColor; // Needle color
     private int centerCircleColor; // Center circle color
 
+    private int currentSpeed;
+    // Duration of animation
+    private final int animationDuration;
+    // Holder of animation values
+    private final String SPEED_VALUE_HOLDER = "needle_speed";
+
     public NeedleView(Context context) {
         super(context);
         setDefaultColors();
         speedometerHelper = new SpeedometerHelper();
+        currentSpeed = SpeedometerHelper.getSpeed();
+
+        // Retrieve and cache the system's default "short" animation time.
+        animationDuration = getResources().getInteger(
+                android.R.integer.config_shortAnimTime);
     }
 
     @Override
-    public void setSpeed(int speed) {
-        invalidate();
+    public void setSpeed(int newSpeed) {
+        PropertyValuesHolder valuesHolder =
+                PropertyValuesHolder.ofInt(SPEED_VALUE_HOLDER, currentSpeed, newSpeed);
+
+        ValueAnimator animator = ValueAnimator.ofPropertyValuesHolder(valuesHolder);
+        animator.setInterpolator(new LinearInterpolator());
+        animator.setDuration(animationDuration);
+        animator.addUpdateListener(valueAnimator -> {
+            currentSpeed = (int) valueAnimator.getAnimatedValue(SPEED_VALUE_HOLDER);
+            invalidate();
+        });
+        animator.start();
     }
 
     @Override
@@ -81,14 +105,13 @@ public class NeedleView extends SpeedView {
         float dotOffset = speedometerHelper.getDotOffset(circleRadius);
         paint.setStyle(Paint.Style.FILL);
         paint.setColor(getColor(ColorManager.getReachedPointColor()));
-//        paint.setStrokeWidth(0);
 
         for (int dotNumber = 1;
              dotNumber <= SpeedometerHelper.getDotsCount();
              dotNumber++) {
 
             // Draw only reached points
-            if (!SpeedometerHelper.pointReached(dotNumber)) break;
+            if (!SpeedometerHelper.pointReached(dotNumber, currentSpeed)) break;
 
             float angle = SpeedometerHelper.getDotAngle(dotNumber);
             float x = SpeedometerHelper.getDotX(angle, circleRadius, dotOffset);
@@ -131,7 +154,7 @@ public class NeedleView extends SpeedView {
         Matrix matrix = new Matrix();
         RectF bounds = new RectF();
         needle.computeBounds(bounds, true);
-        matrix.postRotate(SpeedometerHelper.getNeedleAngle(), center, center);
+        matrix.postRotate(SpeedometerHelper.getNeedleAngle(currentSpeed), center, center);
         needle.transform(matrix);
 
         canvas.drawPath(needle, paint);

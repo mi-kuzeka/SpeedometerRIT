@@ -1,42 +1,78 @@
 package com.speedometerrit.customview;
 
+import android.animation.PropertyValuesHolder;
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.RectF;
+import android.view.animation.LinearInterpolator;
 
 import com.speedometerrit.helpers.ColorManager;
 import com.speedometerrit.helpers.SpeedometerHelper;
 
 public class SpeedProgressView extends SpeedView {
-    private final SpeedometerHelper speedometerHelper;
+    private SpeedometerHelper speedometerHelper;
 
     // Paint object for coloring and styling
-    private final Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-    private int scaleSize = 0; // Scale size
-    private float scalePadding = 0; // Padding of scale
+    private Paint paint;
     // Current speed sector color
     private int speedColor;
-    private boolean isSmallWidget = false;
+    private int scaleSize = 0; // Scale size
+    private float scalePadding = 0; // Padding of scale
+    private final boolean isSmallWidget;
+
+    private int currentSpeed = 0;
+    // Duration of animation
+    private int animationDuration;
+    // Holder of animation values
+    private final String SPEED_VALUE_HOLDER = "speed";
 
     public SpeedProgressView(Context context) {
         super(context);
-        setDefaultColor();
         this.isSmallWidget = false;
-        speedometerHelper = new SpeedometerHelper();
-    }
-
-    @Override
-    public void setSpeed(int speed) {
-        speedometerHelper.setSpeed(speed);
-        invalidate();
+        init();
     }
 
     public SpeedProgressView(Context context, boolean isSmallWidget) {
         super(context);
-        setDefaultColor();
         this.isSmallWidget = isSmallWidget;
+        init();
+    }
+
+    private void init() {
         speedometerHelper = new SpeedometerHelper();
+        currentSpeed = SpeedometerHelper.getSpeed();
+
+        paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        setDefaultColor();
+
+        // Retrieve and cache the system's default "short" animation time.
+        animationDuration = getResources().getInteger(
+                android.R.integer.config_shortAnimTime);
+    }
+
+    private void setDefaultColor() {
+        this.speedColor = getColor(ColorManager.getMainColorId());
+    }
+
+    private int getColor(int colorId) {
+        return getResources().getColor(colorId);
+    }
+
+    @Override
+    public void setSpeed(int newSpeed) {
+        PropertyValuesHolder valuesHolder =
+                PropertyValuesHolder.ofInt(SPEED_VALUE_HOLDER, currentSpeed, newSpeed);
+
+        ValueAnimator animator = ValueAnimator.ofPropertyValuesHolder(valuesHolder);
+        animator.setInterpolator(new LinearInterpolator());
+        animator.setDuration(animationDuration);
+        animator.addUpdateListener(valueAnimator -> {
+            currentSpeed = (int) valueAnimator.getAnimatedValue(SPEED_VALUE_HOLDER);
+            invalidate();
+        });
+        animator.start();
     }
 
     @Override
@@ -48,14 +84,6 @@ public class SpeedProgressView extends SpeedView {
 
         speedometerHelper.setScaleSize(scaleSize, isSmallWidget);
         scalePadding = speedometerHelper.getScalePadding();
-    }
-
-    private void setDefaultColor() {
-        this.speedColor = getColor(ColorManager.getMainColorId());
-    }
-
-    private int getColor(int colorId) {
-        return getResources().getColor(colorId);
     }
 
     @Override
@@ -75,6 +103,6 @@ public class SpeedProgressView extends SpeedView {
                 scaleSize - scalePadding, scaleSize - scalePadding);
 
         canvas.drawArc(oval, SpeedometerHelper.SCALE_BEGIN_ANGLE,
-                speedometerHelper.getSpeedAngle(), false, paint);
+                speedometerHelper.getSpeedAngle(currentSpeed), false, paint);
     }
 }

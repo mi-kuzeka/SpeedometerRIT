@@ -11,7 +11,6 @@ import com.speedometerrit.customview.SpeedProgressView;
 import com.speedometerrit.customview.SpeedometerView;
 
 public class OneLineSpeedometerView extends SpeedometerView {
-    private SpeedProgressView speedProgressView;
 
     public OneLineSpeedometerView(@NonNull Context context) {
         super(context);
@@ -24,16 +23,13 @@ public class OneLineSpeedometerView extends SpeedometerView {
     }
 
     private void init(Context context) {
-        OneLineScaleView scaleView = new OneLineScaleView(context, false);
-        super.addScaleView(scaleView);
-        speedProgressView = new SpeedProgressView(context);
-        super.addSpeedProgressView(speedProgressView);
+        super.addScaleView(new OneLineScaleView(context, false));
+        super.addSpeedProgressView(new SpeedProgressView(context));
         super.setTextSize(getResources().getDimension(R.dimen.speedometer_text_size));
     }
 
     @Override
     public void setSpeed(int speed) {
         super.setSpeed(speed);
-        speedProgressView.setSpeed(speed);
     }
 }

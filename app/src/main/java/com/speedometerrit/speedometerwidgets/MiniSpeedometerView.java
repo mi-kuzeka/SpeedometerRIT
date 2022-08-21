@@ -17,9 +17,7 @@ import com.speedometerrit.helpers.SpeedometerHelper;
 public class MiniSpeedometerView extends ConstraintLayout {
     private TextView speedTextView = null;
     private ImageView amPmImageView = null;
-    private SpeedView speedView;
-
-    private int speed = 0;
+    private SpeedProgressView speedView;
 
     public MiniSpeedometerView(Context context) {
         super(context);
@@ -39,7 +37,7 @@ public class MiniSpeedometerView extends ConstraintLayout {
 
         int textColor = getResources().getColor(ColorManager.getDefaultTextColor());
         speedTextView.setTextColor(textColor);
-        speedTextView.setText(String.valueOf(speed));
+        speedTextView.setText(String.valueOf(SpeedometerHelper.getSpeed()));
 
         setSpeedUnits(SpeedometerHelper.getSpeedUnits());
 
@@ -50,9 +48,8 @@ public class MiniSpeedometerView extends ConstraintLayout {
     }
 
     public void setSpeed(int speed) {
-        this.speed = Math.max(speed, 0);
-        speedTextView.setText(String.valueOf(this.speed));
         speedView.setSpeed(speed);
+        speedTextView.setText(String.valueOf(speed));
     }
 
     public void setSpeedUnits(int speedUnits) {
