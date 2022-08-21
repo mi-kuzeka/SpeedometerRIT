@@ -8,7 +8,7 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.RectF;
-import android.view.animation.LinearInterpolator;
+import android.view.animation.AccelerateDecelerateInterpolator;
 
 import com.speedometerrit.helpers.ColorManager;
 import com.speedometerrit.helpers.SpeedManager;
@@ -55,7 +55,7 @@ public class NeedleSpeedView extends SpeedView {
                 PropertyValuesHolder.ofInt(SPEED_VALUE_HOLDER, currentSpeed, newSpeed);
 
         ValueAnimator animator = ValueAnimator.ofPropertyValuesHolder(valuesHolder);
-        animator.setInterpolator(new LinearInterpolator());
+        animator.setInterpolator(new AccelerateDecelerateInterpolator());
         animator.setDuration(animationDuration);
         animator.addUpdateListener(valueAnimator -> {
             currentSpeed = (int) valueAnimator.getAnimatedValue(SPEED_VALUE_HOLDER);
